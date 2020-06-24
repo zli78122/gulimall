@@ -1,7 +1,11 @@
 package com.atguigu.gulimall.product.service.impl;
 
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -24,6 +28,57 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         );
 
         return new PageUtils(page);
+    }
+
+    // 查询所有分类，以树形结构组装起来
+    @Override
+    public List<CategoryEntity> listWithTree() {
+        //1、查出所有分类
+        List<CategoryEntity> allCategories = baseMapper.selectList(null);
+
+        //2、以树形结构组装起来
+        List<CategoryEntity> level1Categories;
+
+        //2-1 找到所有一级分类
+        //2-2 递归查找每个一级分类的子分类
+        //2-3 按照 CategoryEntity对象的sort属性值 排序
+        //2-4 返回List集合
+        level1Categories = allCategories.stream().filter(currCategory ->
+                currCategory.getParentCid() == 0
+        ).map(currCategory -> {
+            currCategory.setChildren(getChildren(currCategory, allCategories));
+            return currCategory;
+        }).sorted((category1, category2) -> {
+            return (category1.getSort() == null ? 0 : category1.getSort()) - (category2.getSort() == null ? 0 : category2.getSort());
+        }).collect(Collectors.toList());
+
+        return level1Categories;
+    }
+
+    /**
+     * 递归查找 目标分类(root) 的子分类
+     *
+     * @param root 目标分类
+     * @param all 所有分类
+     */
+    private List<CategoryEntity> getChildren(CategoryEntity root, List<CategoryEntity> all) {
+
+        List<CategoryEntity> children;
+
+        // 1.找到 root 的所有子分类
+        // 2.递归查找每个子分类的子分类
+        // 3.按照 CategoryEntity对象的sort属性值 排序
+        // 4.返回List集合
+        children = all.stream().filter(currCategory ->
+                currCategory.getParentCid() == root.getCatId()
+        ).map(currCategory -> {
+            currCategory.setChildren(getChildren(currCategory, all));
+            return currCategory;
+        }).sorted((category1, category2) -> {
+            return (category1.getSort() == null ? 0 : category1.getSort()) - (category2.getSort() == null ? 0 : category2.getSort());
+        }).collect(Collectors.toList());
+
+        return children;
     }
 
 }
