@@ -18,6 +18,13 @@ import java.util.Map;
 
 /**
  * Aliyun OSS Service
+ *
+ * 服务端签名后 客户端直传 - 前端直接将文件上传到阿里云OSS服务器，不走后端服务器
+ *     1.前端向后端请求 可以直接访问OSS的签名凭证 (Policy)
+ *     2.后端返回给前端 可以直接访问OSS的签名凭证 (Policy)
+ *     3.前端凭借 后端返回的签名凭证 (Policy)，直接将文件上传到 阿里云OSS服务器
+ *
+ *     使用这种上传方式，可以减少网络流的传输，因为它避免了 前端先将文件传给后端，后端再将文件上传到阿里云OSS服务器 的传输方式
  */
 @RestController
 public class OssController {
