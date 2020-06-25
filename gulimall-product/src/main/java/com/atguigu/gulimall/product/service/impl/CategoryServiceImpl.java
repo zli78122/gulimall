@@ -30,6 +30,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return new PageUtils(page);
     }
 
+    // 批量删除
+    @Override
+    public void removeCategoryByIds(List<Long> asList) {
+        // TODO 检查当前删除的Categories 是否被其他地方引用，如果被其他地方引用，则不能删除
+
+        // 逻辑删除
+        baseMapper.deleteBatchIds(asList);
+    }
+
     // 查询所有分类，以树形结构组装起来
     @Override
     public List<CategoryEntity> listWithTree() {
@@ -70,7 +79,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         // 3.按照 CategoryEntity对象的sort属性值 排序
         // 4.返回List集合
         children = all.stream().filter(currCategory ->
-                currCategory.getParentCid() == root.getCatId()
+                currCategory.getParentCid().equals(root.getCatId())
         ).map(currCategory -> {
             currCategory.setChildren(getChildren(currCategory, all));
             return currCategory;

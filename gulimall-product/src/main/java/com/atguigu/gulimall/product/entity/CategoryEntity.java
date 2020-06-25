@@ -2,6 +2,7 @@ package com.atguigu.gulimall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -40,8 +41,13 @@ public class CategoryEntity implements Serializable {
 	 */
 	private Integer catLevel;
 	/**
-	 * 是否显示[0-不显示，1显示]
+	 * 是否显示[0-不显示，1-显示]
+	 *
+	 * @TableLogic 逻辑删除，表示 showStatus 是逻辑删除字段
+	 *   value = "1"  : 当 showStatus=1 时，表示当前记录没有被删除
+	 *   delval = "0" : 当 showStatus=0 时，表示当前记录已经被逻辑删除
 	 */
+	@TableLogic(value = "1", delval = "0")
 	private Integer showStatus;
 	/**
 	 * 排序
