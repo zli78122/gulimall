@@ -10,6 +10,9 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.ElementType.TYPE_USE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+/**
+ * 自定义校验注解
+ */
 @Documented
 @Constraint(validatedBy = {ListValueConstraintValidator.class})
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
