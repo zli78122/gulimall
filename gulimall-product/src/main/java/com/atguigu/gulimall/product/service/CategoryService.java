@@ -23,5 +23,7 @@ public interface CategoryService extends IService<CategoryEntity> {
 
     // 批量删除
     void removeCategoryByIds(List<Long> asList);
-}
 
+    // 查询 商品分类 的 catelogPath - 从祖先节点到自身 的路径
+    Long[] findCatelogPath(Long categoryId);
+}

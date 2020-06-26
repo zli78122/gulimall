@@ -2,6 +2,8 @@ package com.atguigu.gulimall.product.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,7 +18,6 @@ import com.atguigu.gulimall.product.dao.CategoryDao;
 import com.atguigu.gulimall.product.entity.CategoryEntity;
 import com.atguigu.gulimall.product.service.CategoryService;
 
-
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
 
@@ -28,6 +29,30 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         );
 
         return new PageUtils(page);
+    }
+
+    // 查询 商品分类 的 catelogPath - 从祖先节点到自身 的路径
+    @Override
+    public Long[] findCatelogPath(Long categoryId) {
+        List<Long> paths = new ArrayList<>();
+
+        // 递归 查询 商品分类 的 catelogPath - 从祖先节点到自身 的路径
+        List<Long> parentPath = findParentPath(categoryId, paths);
+
+        // 反转列表
+        Collections.reverse(parentPath);
+
+        return parentPath.toArray(new Long[parentPath.size()]);
+    }
+
+    // 递归 查询 商品分类 的 catelogPath - 从祖先节点到自身 的路径
+    private List<Long> findParentPath(Long categoryId, List<Long> paths) {
+        paths.add(categoryId);
+        CategoryEntity category = this.getById(categoryId);
+        if (category.getParentCid() != 0) {
+            findParentPath(category.getParentCid(), paths);
+        }
+        return paths;
     }
 
     // 批量删除
@@ -68,7 +93,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * 递归查找 目标分类(root) 的子分类
      *
      * @param root 目标分类
-     * @param all 所有分类
+     * @param all  所有分类
      */
     private List<CategoryEntity> getChildren(CategoryEntity root, List<CategoryEntity> all) {
 
@@ -89,5 +114,4 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
         return children;
     }
-
 }
