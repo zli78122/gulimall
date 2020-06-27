@@ -3,7 +3,10 @@ package com.atguigu.gulimall.product.controller;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.atguigu.gulimall.product.entity.BrandEntity;
+import com.atguigu.gulimall.product.vo.BrandVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +28,24 @@ import com.atguigu.common.utils.R;
 public class CategoryBrandRelationController {
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
+
+    /**
+     * 获取 与指定分类相关联的品牌 (根据 分类id 查询 品牌)
+     */
+    @GetMapping("/brands/list")
+    public R relationBrandList(@RequestParam(value = "catId", required = true) Long catId) {
+        List<BrandEntity> vos = categoryBrandRelationService.getBrandsByCatId(catId);
+
+        // 把 BrandEntity 转换为 BrandVo
+        List<BrandVo> collect = vos.stream().map(item -> {
+            BrandVo brandVo = new BrandVo();
+            brandVo.setBrandId(item.getBrandId());
+            brandVo.setBrandName(item.getName());
+            return brandVo;
+        }).collect(Collectors.toList());
+
+        return R.ok().put("data", collect);
+    }
 
     /**
      * 获取品牌关联的分类 - 根据 brandId 获取 商品分类信息

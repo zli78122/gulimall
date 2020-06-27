@@ -2,8 +2,8 @@ spring:
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://192.168.56.200:3306/gulimall_ums
-    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.56.200:3306/gulimall_ums?serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
   cloud:
     nacos:
       discovery:
