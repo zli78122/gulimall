@@ -49,6 +49,64 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     @Autowired
     private CategoryService categoryService;
 
+    /**
+     * 查询 可以跟 当前AttrGroup对象 关联的 所有Attr对象
+     */
+    @Override
+    public PageUtils getNoRelationAttr(Map<String, Object> params, Long attrGroupId) {
+        // 1.当前 AttrGroup对象 只能关联与自己 分类相同 的 Attr对象
+        // 2.当前 AttrGroup对象 只能关联 还没有跟其他 AttrGroup对象 关联的 Attr对象
+
+        // 根据 attrGroupId 查询 AttrGroup对象
+        AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrGroupId);
+        // 获取 分类id
+        Long catelogId = attrGroupEntity.getCatelogId();
+
+        // 查询 当前分类 下的 所有AttrGroup对象 (根据 分类id 查询 AttrGroup对象)
+        // e.g. 查询到 手机分类 下的 所有AttrGroup对象 : 主体、基本信息、主芯片、屏幕、后置摄像头、前置摄像头、电池信息 ...
+        List<AttrGroupEntity> group = attrGroupDao.selectList(
+                new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId)
+        );
+        // 收集 attrGroupId
+        List<Long> attrGroupIds = group.stream().map(item -> {
+            return item.getAttrGroupId();
+        }).collect(Collectors.toList());
+
+        // 根据 attrGroupIds 查询 Attr 和 AttrGroup 的 中间表 => 可以查询到 当前分类下 所有已经跟 AttrGroup对象 关联了的 Attr对象
+        List<AttrAttrgroupRelationEntity> relationEntities = relationDao.selectList(
+                new QueryWrapper<AttrAttrgroupRelationEntity>().in("attr_group_id", attrGroupIds)
+        );
+        // 收集 attrIds (获取 当前分类下 所有已经跟 AttrGroup对象 关联了的 Attr对象的id)
+        List<Long> attrIds = relationEntities.stream().map(item -> {
+            return item.getAttrId();
+        }).collect(Collectors.toList());
+
+        // 查询条件 : ①.指定分类id   ②.属性类别 为 基本属性
+        QueryWrapper<AttrEntity> wrapper = new QueryWrapper<AttrEntity>()
+                .eq("catelog_id", catelogId)
+                .eq("attr_type", ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode());
+
+        // 查询条件 : attr_id != attrId in attrIds
+        // 当前分类下 所有Attr对象 - 当前分类下 已经跟 AttrGroup对象 关联了的 Attr对象 = 当前分类下 还没有跟 AttrGroup对象 关联的 Attr对象
+        if (attrIds != null && attrIds.size() > 0) {
+            wrapper.notIn("attr_id", attrIds);
+        }
+
+        // 关键字 条件查询
+        String key = (String) params.get("key");
+        if (!StringUtils.isEmpty(key)) {
+            wrapper.and((w) -> {
+                w.eq("attr_id", key).or().like("attr_name", key);
+            });
+        }
+
+        // 分页条件查询
+        IPage<AttrEntity> page = this.page(new Query<AttrEntity>().getPage(params), wrapper);
+        PageUtils pageUtils = new PageUtils(page);
+
+        return pageUtils;
+    }
+
     // 批量删除 Attr对象 和 AttrGroup对象 的 关联关系
     @Override
     public void deleteRelation(AttrGroupRelationVo[] attrGroupRelationVos) {
@@ -97,7 +155,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         this.updateById(attrEntity);
 
         // 只有 基本属性 有 分组信息，销售属性 不需要 分组信息   =>   Attr 和 AttrGroup 的 中间表 不需要保存 销售属性
-        if (attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()) {
+        if (attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() && attr.getAttrGroupId() != null) {
             // 2.更新 Attr 和 AttrGroup 的 中间表
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
             relationEntity.setAttrGroupId(attr.getAttrGroupId());
@@ -238,7 +296,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         this.save(attrEntity);
 
         // 只有 基本属性 有 分组信息，销售属性 不需要 分组信息   =>   Attr 和 AttrGroup 的 中间表 不需要保存 销售属性
-        if (attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()) {
+        if (attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() && attr.getAttrGroupId() != null) {
             // 保存 Attr 和 AttrGroup 的 中间表
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
             relationEntity.setAttrGroupId(attr.getAttrGroupId());

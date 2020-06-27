@@ -36,4 +36,7 @@ public interface AttrService extends IService<AttrEntity> {
 
     // 批量删除 Attr对象 和 AttrGroup对象 的 关联关系
     void deleteRelation(AttrGroupRelationVo[] attrGroupRelationVos);
+
+    // 查询 可以跟 当前AttrGroup对象 关联的 所有Attr对象
+    PageUtils getNoRelationAttr(Map<String, Object> params, Long attrGroupId);
 }

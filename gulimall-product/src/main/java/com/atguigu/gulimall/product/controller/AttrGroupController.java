@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.atguigu.gulimall.product.entity.AttrEntity;
+import com.atguigu.gulimall.product.service.AttrAttrgroupRelationService;
 import com.atguigu.gulimall.product.service.AttrService;
 import com.atguigu.gulimall.product.service.CategoryService;
 import com.atguigu.gulimall.product.vo.AttrGroupRelationVo;
@@ -34,6 +35,28 @@ public class AttrGroupController {
 
     @Autowired
     private AttrService attrService;
+
+    @Autowired
+    private AttrAttrgroupRelationService relationService;
+
+    /**
+     * 批量添加 AttrGroup对象 和 Attr对象 的 关联关系
+     */
+    @PostMapping("/attr/relation")
+    public R addRelation(@RequestBody List<AttrGroupRelationVo> attrGroupRelationVos) {
+        relationService.saveBatch(attrGroupRelationVos);
+        return R.ok();
+    }
+
+    /**
+     * 查询 可以跟 当前AttrGroup对象 关联的 所有Attr对象
+     */
+    @GetMapping("/{attrGroupId}/noattr/relation")
+    public R attrNoRelation(@PathVariable("attrGroupId") Long attrGroupId,
+                            @RequestParam Map<String, Object> params) {
+        PageUtils page = attrService.getNoRelationAttr(params, attrGroupId);
+        return R.ok().put("page", page);
+    }
 
     /**
      * 批量删除 Attr对象 和 AttrGroup对象 的 关联关系
