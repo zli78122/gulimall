@@ -29,12 +29,20 @@ public class AttrController {
 
     /**
      * 分页条件查询
+     *
+     * 查询 基本属性 : /product/attr/base/list/{catelogId}
+     * 查询 销售属性 : /product/attr/sale/list/{catelogId}
+     *
+     * pms_attr 数据表中
+     *   attr_type = 1 : 基本属性
+     *   attr_type = 0 : 销售属性
      */
-    @GetMapping("/base/list/{catelogId}")
-    public R baseAttrList(@RequestParam Map<String, Object> params,
-                          @PathVariable("catelogId") Long catelogId) {
+    @GetMapping("/{attrType}/list/{catelogId}")
+    public R baseAttrList(@PathVariable("attrType") String attrType,
+                          @PathVariable("catelogId") Long catelogId,
+                          @RequestParam Map<String, Object> params) {
 
-        PageUtils page = attrService.queryBaseAttrPage(params, catelogId);
+        PageUtils page = attrService.queryBaseAttrPage(attrType, catelogId, params);
         return R.ok().put("page", page);
     }
 
