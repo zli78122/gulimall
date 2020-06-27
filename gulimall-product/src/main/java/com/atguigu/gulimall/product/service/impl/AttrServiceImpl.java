@@ -55,7 +55,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         // 1.更新 基本信息
         this.updateById(attrEntity);
 
-        // 只有 基本属性 有 分组信息，销售属性 不需要 分组信息   =>   Attr 和 AttrGroup 的 中间表 不需要保存 销售属性 的 相关信息
+        // 只有 基本属性 有 分组信息，销售属性 不需要 分组信息   =>   Attr 和 AttrGroup 的 中间表 不需要保存 销售属性
         if (attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()) {
             // 2.更新 Attr 和 AttrGroup 的 中间表
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
@@ -196,7 +196,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         // 保存自身
         this.save(attrEntity);
 
-        // 只有 基本属性 有 分组信息，销售属性 不需要 分组信息   =>   Attr 和 AttrGroup 的 中间表 不需要保存 销售属性 的 相关信息
+        // 只有 基本属性 有 分组信息，销售属性 不需要 分组信息   =>   Attr 和 AttrGroup 的 中间表 不需要保存 销售属性
         if (attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()) {
             // 保存 Attr 和 AttrGroup 的 中间表
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
