@@ -56,6 +56,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     public PageUtils getNoRelationAttr(Map<String, Object> params, Long attrGroupId) {
         // 1.当前 AttrGroup对象 只能关联 与自己分类相同的 Attr对象
         // 2.当前 AttrGroup对象 只能关联 还没有跟其他 AttrGroup对象 关联的 Attr对象
+        // 因此，当前 AttrGroup对象 只能关联 与自己分类相同 && 还没有跟其他AttrGroup对象关联 的 Attr对象
 
         // 根据 attrGroupId 查询 AttrGroup对象
         AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrGroupId);
