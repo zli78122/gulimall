@@ -25,7 +25,7 @@ public class AttrAttrgroupRelationServiceImpl extends ServiceImpl<AttrAttrgroupR
     @Override
     public void saveBatch(List<AttrGroupRelationVo> attrGroupRelationVos) {
         List<AttrAttrgroupRelationEntity> relationEntities = attrGroupRelationVos.stream().map(item -> {
-            // 创建 AttrGroup对象 和 Attr对象 关联关系对象 (Attr 和 AttrGroup 的 中间表)
+            // 创建 AttrGroup对象 和 Attr对象 的 关联关系对象 (Attr 和 AttrGroup 的 中间表)
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
             // 属性复制
             BeanUtils.copyProperties(item, relationEntity);
