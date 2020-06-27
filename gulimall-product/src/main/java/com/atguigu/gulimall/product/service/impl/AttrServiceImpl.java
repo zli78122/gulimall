@@ -54,7 +54,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
      */
     @Override
     public PageUtils getNoRelationAttr(Map<String, Object> params, Long attrGroupId) {
-        // 1.当前 AttrGroup对象 只能关联与自己 分类相同 的 Attr对象
+        // 1.当前 AttrGroup对象 只能关联 与自己分类相同的 Attr对象
         // 2.当前 AttrGroup对象 只能关联 还没有跟其他 AttrGroup对象 关联的 Attr对象
 
         // 根据 attrGroupId 查询 AttrGroup对象
@@ -62,8 +62,8 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         // 获取 分类id
         Long catelogId = attrGroupEntity.getCatelogId();
 
-        // 查询 当前分类 下的 所有AttrGroup对象 (根据 分类id 查询 AttrGroup对象)
-        // e.g. 查询到 手机分类 下的 所有AttrGroup对象 : 主体、基本信息、主芯片、屏幕、后置摄像头、前置摄像头、电池信息 ...
+        // 查询 当前分类下 所有AttrGroup对象 (根据 分类id 查询 AttrGroup对象)
+        // e.g. 查询到 手机分类下 所有AttrGroup对象 : 主体、基本信息、主芯片、屏幕、后置摄像头、前置摄像头、电池信息 ...
         List<AttrGroupEntity> group = attrGroupDao.selectList(
                 new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId)
         );
