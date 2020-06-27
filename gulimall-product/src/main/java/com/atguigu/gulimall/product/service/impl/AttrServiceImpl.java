@@ -8,6 +8,7 @@ import com.atguigu.gulimall.product.entity.AttrAttrgroupRelationEntity;
 import com.atguigu.gulimall.product.entity.AttrGroupEntity;
 import com.atguigu.gulimall.product.entity.CategoryEntity;
 import com.atguigu.gulimall.product.service.CategoryService;
+import com.atguigu.gulimall.product.vo.AttrGroupRelationVo;
 import com.atguigu.gulimall.product.vo.AttrRespVo;
 import com.atguigu.gulimall.product.vo.AttrVo;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -15,6 +16,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,6 +48,44 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Autowired
     private CategoryService categoryService;
+
+    // 批量删除 Attr对象 和 AttrGroup对象 的 关联关系
+    @Override
+    public void deleteRelation(AttrGroupRelationVo[] attrGroupRelationVos) {
+        List<AttrAttrgroupRelationEntity> relationEntities = Arrays.asList(attrGroupRelationVos).stream().map((item) -> {
+            // 把 AttrGroupRelationVo 转换为 AttrAttrgroupRelationEntity
+            AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
+            // 属性赋值
+            BeanUtils.copyProperties(item, relationEntity);
+            return relationEntity;
+        }).collect(Collectors.toList());
+
+        // 批量删除 Attr对象 和 AttrGroup对象 的 关联关系 - 批量删除 Attr 和 AttrGroup 的 中间表
+        relationDao.deleteBatchRelation(relationEntities);
+    }
+
+    // 根据 attrGroupId 查询 Attr对象
+    @Override
+    public List<AttrEntity> getRelationAttr(Long attrGroupId) {
+        // 根据 attrGroupId 查询 Attr 和 AttrGroup 的 中间表
+        List<AttrAttrgroupRelationEntity> relationEntities = relationDao.selectList(
+                new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_group_id", attrGroupId)
+        );
+
+        // 获取 目标Attr对象 的 attrId集合
+        List<Long> attrIds = relationEntities.stream().map((attr) -> {
+            return attr.getAttrId();
+        }).collect(Collectors.toList());
+
+        if (attrIds == null || attrIds.size() == 0) {
+            return null;
+        }
+
+        // 根据 attrId集合 查询 Attr对象
+        Collection<AttrEntity> attrEntities = this.listByIds(attrIds);
+
+        return (List<AttrEntity>) attrEntities;
+    }
 
     @Transactional
     @Override

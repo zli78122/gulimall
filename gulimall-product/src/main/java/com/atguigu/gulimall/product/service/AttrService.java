@@ -1,11 +1,13 @@
 package com.atguigu.gulimall.product.service;
 
+import com.atguigu.gulimall.product.vo.AttrGroupRelationVo;
 import com.atguigu.gulimall.product.vo.AttrRespVo;
 import com.atguigu.gulimall.product.vo.AttrVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.common.utils.PageUtils;
 import com.atguigu.gulimall.product.entity.AttrEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,4 +30,10 @@ public interface AttrService extends IService<AttrEntity> {
     AttrRespVo getAttrInfo(Long attrId);
 
     void updateAttr(AttrVo attr);
+
+    // 根据 attrGroupId 查询 Attr对象
+    List<AttrEntity> getRelationAttr(Long attrGroupId);
+
+    // 批量删除 Attr对象 和 AttrGroup对象 的 关联关系
+    void deleteRelation(AttrGroupRelationVo[] attrGroupRelationVos);
 }
