@@ -12,9 +12,13 @@ import com.atguigu.gulimall.product.dao.SkuInfoDao;
 import com.atguigu.gulimall.product.entity.SkuInfoEntity;
 import com.atguigu.gulimall.product.service.SkuInfoService;
 
-
 @Service("skuInfoService")
 public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> implements SkuInfoService {
+
+    @Override
+    public void saveSkuInfo(SkuInfoEntity skuInfoEntity) {
+        this.baseMapper.insert(skuInfoEntity);
+    }
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -25,5 +29,4 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
 
         return new PageUtils(page);
     }
-
 }
