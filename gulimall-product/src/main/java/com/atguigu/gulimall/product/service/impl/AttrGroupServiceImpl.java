@@ -1,8 +1,15 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import com.atguigu.gulimall.product.entity.AttrEntity;
+import com.atguigu.gulimall.product.service.AttrService;
+import com.atguigu.gulimall.product.vo.AttrGroupWithAttrsVo;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -18,6 +25,9 @@ import org.springframework.util.StringUtils;
 @Service("attrGroupService")
 public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEntity> implements AttrGroupService {
 
+    @Autowired
+    private AttrService attrService;
+
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<AttrGroupEntity> page = this.page(
@@ -26,6 +36,33 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         );
 
         return new PageUtils(page);
+    }
+
+    // 查询 当前分类下 所有 属性分组(AttrGroup) 以及 每个属性分组下 所有 属性(Attr)
+    @Override
+    public List<AttrGroupWithAttrsVo> getAttrGroupWithAttrsByCatelogId(Long catelogId) {
+        // 查询 当前分类下 所有 属性分组(AttrGroup)
+        List<AttrGroupEntity> attrGroupEntities = this.list(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", catelogId));
+
+        // 查询 每个属性分组下 所有 属性(Attr)
+        List<AttrGroupWithAttrsVo> vos = attrGroupEntities.stream().map(item -> {
+            AttrGroupWithAttrsVo attrsVo = new AttrGroupWithAttrsVo();
+            BeanUtils.copyProperties(item,attrsVo);
+            // 根据 attrGroupId 查询 Attr对象
+            List<AttrEntity> attrs = attrService.getRelationAttr(attrsVo.getAttrGroupId());
+            attrsVo.setAttrs(attrs);
+            return attrsVo;
+        }).collect(Collectors.toList());
+
+        // 移除 没有 属性(Attr) 的 属性分组(AttrGroup)
+        for (int i = 0; i < vos.size(); i++) {
+            AttrGroupWithAttrsVo attrGroupWithAttrsVo = vos.get(i);
+            if (attrGroupWithAttrsVo.getAttrs() == null || vos.get(i).getAttrs().size() == 0) {
+                vos.remove(attrGroupWithAttrsVo);
+            }
+        }
+
+        return vos;
     }
 
     /**
