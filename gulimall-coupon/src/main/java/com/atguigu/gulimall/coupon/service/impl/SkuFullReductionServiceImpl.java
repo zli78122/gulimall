@@ -37,12 +37,6 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
     // 保存sku的 商品会员价格、商品满减信息、商品折扣信息
     @Override
     public void saveSkuReduction(SkuReductionTo reductionTo) {
-        // 6-4 保存sku的 商品会员价格、商品满减信息、商品折扣信息
-        //   商品会员价格 对应 gulimall_sms 数据库 的 sms_member_price 数据表
-        //   商品满减信息 对应 gulimall_sms 数据库 的 sms_sku_full_reduction 数据表
-        //   商品折扣信息 对应 gulimall_sms 数据库 的 sms_sku_ladder 数据表
-
-
         // 1.保存sku的商品折扣信息 - 对应 gulimall_sms 数据库 的 sms_sku_ladder 数据表
         SkuLadderEntity skuLadderEntity = new SkuLadderEntity();
         skuLadderEntity.setSkuId(reductionTo.getSkuId());
@@ -56,6 +50,7 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
         // 2.保存sku的商品满减信息 - 对应 gulimall_sms 数据库 的 sms_sku_full_reduction 数据表
         SkuFullReductionEntity reductionEntity = new SkuFullReductionEntity();
         BeanUtils.copyProperties(reductionTo, reductionEntity);
+        reductionEntity.setAddOther(reductionTo.getPriceStatus());
         if (reductionEntity.getFullPrice().compareTo(new BigDecimal("0")) > 0) {
             this.save(reductionEntity);
         }
@@ -68,7 +63,7 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
             priceEntity.setMemberLevelId(item.getId());
             priceEntity.setMemberLevelName(item.getName());
             priceEntity.setMemberPrice(item.getPrice());
-            priceEntity.setAddOther(reductionTo.getPriceStatus());
+            priceEntity.setAddOther(1);
             return priceEntity;
         }).filter(item -> {
             return item.getMemberPrice().compareTo(new BigDecimal("0")) > 0;
