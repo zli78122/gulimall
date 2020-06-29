@@ -13,5 +13,9 @@
         <result property="stockLocked" column="stock_locked"/>
     </resultMap>
 
+    <!-- 更新 商品库存记录 -->
+    <update id="addStock">
+        UPDATE `wms_ware_sku` SET stock=stock+#{skuNum} WHERE sku_id=#{skuId} AND ware_id=#{wareId}
+    </update>
 
 </mapper>

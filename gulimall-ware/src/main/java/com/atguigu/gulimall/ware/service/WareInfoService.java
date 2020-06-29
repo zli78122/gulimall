@@ -15,6 +15,6 @@ import java.util.Map;
  */
 public interface WareInfoService extends IService<WareInfoEntity> {
 
+    // 分页条件查询
     PageUtils queryPage(Map<String, Object> params);
 }
-
