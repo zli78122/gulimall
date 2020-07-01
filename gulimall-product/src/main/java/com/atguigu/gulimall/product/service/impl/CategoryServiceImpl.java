@@ -37,6 +37,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return new PageUtils(page);
     }
 
+    // 查询所有一级分类
+    @Override
+    public List<CategoryEntity> getLevelOneCategories() {
+        List<CategoryEntity> categoryEntities = baseMapper.selectList(
+                new QueryWrapper<CategoryEntity>().eq("parent_cid", 0)
+        );
+        return categoryEntities;
+    }
+
     // 级联更新
     @Transactional
     @Override
