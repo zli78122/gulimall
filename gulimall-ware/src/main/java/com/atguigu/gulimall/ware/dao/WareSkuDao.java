@@ -17,4 +17,7 @@ public interface WareSkuDao extends BaseMapper<WareSkuEntity> {
 
     // 更新 商品库存记录
     void addStock(@Param("skuId") Long skuId, @Param("wareId") Long wareId, @Param("skuNum") Integer skuNum);
+
+    // 查询 当前sku 的 总库存量
+    Long getSkuStock(Long skuId);
 }

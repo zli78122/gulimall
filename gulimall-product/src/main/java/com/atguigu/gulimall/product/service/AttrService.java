@@ -39,4 +39,7 @@ public interface AttrService extends IService<AttrEntity> {
 
     // 查询 可以跟 当前AttrGroup对象 关联的 所有Attr对象
     PageUtils getNoRelationAttr(Map<String, Object> params, Long attrGroupId);
+
+    // 根据 属性id 查询 search_type = 1 的基本属性 (search_type 表示 属性是否可以被检索)
+    List<Long> selectSearchAttrIds(List<Long> attrIds);
 }
