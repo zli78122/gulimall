@@ -7,34 +7,37 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * 首页分类的数据
- * 2级分类Vo
+ * 商品二级分类
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Catelog2VO {
 
-    private String catalog1Id;//1级父分类id
+    // 一级父分类id
+    private String catalog1Id;
 
-    private List<Catelog3VO> catalog3List;//3级子分类id
+    // 三级子分类
+    private List<Catelog3VO> catalog3List;
 
-    private String id;//当前2级分类的id
+    // 二级分类id
+    private String id;
 
-    private String name;//当前2级分类的name
+    // 二级分类名称
+    private String name;
 
     /**
-     * 3级分类Vo
+     * 三级分类
      */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Catelog3VO {
-
+        // 二级父分类id
         private String catalog2Id;
-
+        // 三级分类id
         private String id;
-
+        // 三级分类名称
         private String name;
     }
 }

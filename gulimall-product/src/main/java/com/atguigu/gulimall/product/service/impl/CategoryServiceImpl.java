@@ -1,6 +1,7 @@
 package com.atguigu.gulimall.product.service.impl;
 
 import com.atguigu.gulimall.product.service.CategoryBrandRelationService;
+import com.atguigu.gulimall.product.vo.Catelog2VO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import com.atguigu.gulimall.product.dao.CategoryDao;
 import com.atguigu.gulimall.product.entity.CategoryEntity;
 import com.atguigu.gulimall.product.service.CategoryService;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
@@ -35,6 +37,62 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         );
 
         return new PageUtils(page);
+    }
+
+    // 查询商品分类信息，封装成固定格式，用于前台首页显示
+    @Override
+    public Map<String, List<Catelog2VO>> getCatelogJson() {
+        // 查询所有类别
+        List<CategoryEntity> selectList = baseMapper.selectList(null);
+
+        // 查询所有一级分类
+        List<CategoryEntity> levelOneCategorys = getParent_cid(selectList, 0L);
+
+        // 封装 结果Map
+        //   key : 一级分类id
+        //   value : List<Catelog2VO>>
+        Map<String, List<Catelog2VO>> result = levelOneCategorys.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+            // 查询 一级分类 下的 二级分类
+            List<CategoryEntity> categoryEntities = getParent_cid(selectList, v.getCatId());
+
+            List<Catelog2VO> catelog2VOS = null;
+            if (!CollectionUtils.isEmpty(categoryEntities)) {
+                // 遍历 二级分类
+                catelog2VOS = categoryEntities.stream().map(l2 -> {
+                    // 封装 二级分类
+                    Catelog2VO catelog2VO = new Catelog2VO(v.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
+
+                    // 查询 二级分类 下的 三级分类
+                    List<CategoryEntity> category3List = getParent_cid(selectList, l2.getCatId());
+
+                    if (!CollectionUtils.isEmpty(category3List)) {
+                        // 遍历 三级分类
+                        List<Catelog2VO.Catelog3VO> collect = category3List.stream().map(l3 -> {
+                            // 封装 三级分类
+                            Catelog2VO.Catelog3VO catelog3VO = new Catelog2VO.Catelog3VO(l2.getCatId().toString(), l3.getCatId().toString(), l3.getName());
+                            return catelog3VO;
+                        }).collect(Collectors.toList());
+
+                        catelog2VO.setCatalog3List(collect);
+                    }
+
+                    return catelog2VO;
+                }).collect(Collectors.toList());
+            }
+
+            return catelog2VOS;
+        }));
+
+        return result;
+    }
+
+    // 根据 parent_cid 查询 分类信息
+    private List<CategoryEntity> getParent_cid(List<CategoryEntity> selectList, Long parent_cid) {
+        List<CategoryEntity> collect = selectList.stream().filter(item -> {
+            return item.getParentCid().longValue() == parent_cid.longValue();
+        }).collect(Collectors.toList());
+
+        return collect;
     }
 
     // 查询所有一级分类

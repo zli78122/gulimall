@@ -1,5 +1,6 @@
 package com.atguigu.gulimall.product.service;
 
+import com.atguigu.gulimall.product.vo.Catelog2VO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.common.utils.PageUtils;
 import com.atguigu.gulimall.product.entity.CategoryEntity;
@@ -32,4 +33,7 @@ public interface CategoryService extends IService<CategoryEntity> {
 
     // 查询所有一级分类
     List<CategoryEntity> getLevelOneCategories();
+
+    // 查询商品分类信息，封装成固定格式，用于前台首页显示
+    Map<String, List<Catelog2VO>> getCatelogJson();
 }

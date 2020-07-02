@@ -27,9 +27,14 @@ public class IndexController {
         return "index";
     }
 
+    /**
+     * 查询商品分类信息，封装成固定格式，用于前台首页显示
+     */
     @GetMapping("/index/catalog.json")
     @ResponseBody
     public Map<String, List<Catelog2VO>> getCatelogJson() {
-        return null;
+        // 查询商品分类信息，封装成固定格式，用于前台首页显示
+        Map<String, List<Catelog2VO>> map = categoryService.getCatelogJson();
+        return map;
     }
 }
