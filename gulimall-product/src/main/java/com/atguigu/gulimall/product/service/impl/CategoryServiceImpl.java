@@ -3,7 +3,9 @@ package com.atguigu.gulimall.product.service.impl;
 import com.atguigu.gulimall.product.service.CategoryBrandRelationService;
 import com.atguigu.gulimall.product.vo.Catelog2VO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,9 +32,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
 
-    @Autowired
-    private StringRedisTemplate redisTemplate;
-
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<CategoryEntity> page = this.page(
@@ -44,6 +43,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     // 查询商品分类信息，封装成固定格式，用于前台首页显示
+    @Cacheable(value = {"category"}, key = "#root.methodName", sync = true)
     @Override
     public Map<String, List<Catelog2VO>> getCatelogJson() {
         // 查询所有类别
@@ -100,6 +100,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     // 查询所有一级分类
+    @Cacheable(value = {"category"}, key = "#root.method.name", sync = true)
     @Override
     public List<CategoryEntity> getLevelOneCategories() {
         List<CategoryEntity> categoryEntities = baseMapper.selectList(
@@ -109,6 +110,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     // 级联更新
+    @Caching(evict = {
+            @CacheEvict(value = {"category"}, key = "'getLevelOneCategories'"),
+            @CacheEvict(value = {"category"}, key = "'getCatelogJson'")
+    })
     @Transactional
     @Override
     public void updateCascade(CategoryEntity category) {
