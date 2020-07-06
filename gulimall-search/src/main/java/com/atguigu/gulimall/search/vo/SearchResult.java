@@ -13,11 +13,10 @@ public class SearchResult {
     private List<SkuEsModel> products;
 
     // 分页信息
-    private Integer pageNum;    //当前页码
-    private Long total;         //总记录数
-    private Integer totalPages; //总页码
-
-//    private List<Integer> pageNavs;//导航页码
+    private Integer pageNum;        //当前页码
+    private Long total;             //总记录数
+    private Integer totalPages;     //总页码
+    private List<Integer> pageNavs; //页码集合 - [1, 2, 3, ... totalPages]
 
     // 当前查询到的结果所涉及到的所有品牌
     private List<BrandVo> brands;
