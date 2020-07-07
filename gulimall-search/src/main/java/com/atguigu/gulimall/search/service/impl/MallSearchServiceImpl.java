@@ -1,10 +1,15 @@
 package com.atguigu.gulimall.search.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.to.es.SkuEsModel;
+import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.search.config.GulimallElasticsearchConfig;
 import com.atguigu.gulimall.search.constant.EsConstant;
+import com.atguigu.gulimall.search.feign.ProductFeignService;
 import com.atguigu.gulimall.search.service.MallSearchService;
+import com.atguigu.gulimall.search.vo.AttrResponseVo;
+import com.atguigu.gulimall.search.vo.BrandVo;
 import com.atguigu.gulimall.search.vo.SearchParam;
 import com.atguigu.gulimall.search.vo.SearchResult;
 import org.apache.lucene.search.join.ScoreMode;
@@ -33,6 +38,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,6 +49,9 @@ public class MallSearchServiceImpl implements MallSearchService {
 
     @Autowired
     private RestHighLevelClient client;
+
+    @Autowired
+    ProductFeignService productFeignService;
 
     /**
      * 检索
@@ -172,19 +182,97 @@ public class MallSearchServiceImpl implements MallSearchService {
         }
         result.setPageNavs(pageNavs);
 
+        // 6.构建面包屑导航
+        // 属性的面包屑导航
+        // attrs=[属性id]_属性值1:属性值2&attrs=[属性id]_属性值1:属性值2
+        // e.g.   attrs=1_5寸:6寸&attrs=2_16G:8G
+        if (param.getAttrs() != null && param.getAttrs().size() > 0) {
+            List<SearchResult.NavVo> collect = param.getAttrs().stream().map(attr -> {
+                // 将 每一个attrs请求参数 都封装为 一个面包屑导航对象 (NavVo)
+                SearchResult.NavVo navVo = new SearchResult.NavVo();
+                // 1_5寸:6寸   ->   [1, 5寸:6寸]
+                String[] s = attr.split("_");
+                // 设置 面包屑导航的值 为 属性值
+                navVo.setNavValue(s[1]);
+                // 根据 attrId 查询 属性详细信息
+                R attrInfoR = productFeignService.info(Long.parseLong(s[0]));
+                if (attrInfoR.getCode() == 0) {
+                    // 查询属性详细信息成功
+                    // 从 attrInfoR 中获取 attrResponseVo
+                    AttrResponseVo attrResponseVo = attrInfoR.getData("attr", new TypeReference<AttrResponseVo>() {
+                    });
+                    // 设置 面包屑导航的名称 为 属性名称
+                    navVo.setNavName(attrResponseVo.getAttrName());
+                } else {
+                    // 查询属性详细信息失败
+                    // 设置 面包屑导航的名称 为 属性id
+                    navVo.setNavName(s[0]);
+                }
+                // attrIds : 已选择的所有属性 - 请求参数中包含的所有属性
+                result.getAttrIds().add(Long.parseLong(s[0]));
+
+                // 设置 NavVo对象 的 link属性 : 取消当前面包屑导航后，页面跳转的地址
+                // 清除地址中当前属性的请求参数 - 获取所有的请求参数，清除当前属性的请求参数
+                String replace = replaceQueryString(param, attr, "attrs"); // attr = "1_5寸:6寸"
+                navVo.setLink("http://search.gulimall.com/list.html?" + replace);
+
+                return navVo;
+            }).collect(Collectors.toList());
+
+            result.setNavs(collect);
+        }
+        // 品牌的面包屑导航
+        if (param.getBrandId() != null && param.getBrandId().size() > 0) {
+            // 将 品牌请求参数 封装为 一个面包屑导航对象 (NavVo)
+            SearchResult.NavVo navVo = new SearchResult.NavVo();
+            // 设置 面包屑导航的名称 为 "品牌"
+            navVo.setNavName("品牌");
+
+            // 根据 brandId 获取 品牌信息
+            R brandInfoR = productFeignService.getBrands(param.getBrandId());
+            if (brandInfoR.getCode() == 0) {
+                // 查询品牌信息成功
+                // 从 brandInfoR 中获取 brandVoList
+                List<BrandVo> brandVoList = brandInfoR.getData("brand", new TypeReference<List<BrandVo>>() {
+                });
+                for (BrandVo brandVo : brandVoList) {
+                    // 设置 面包屑导航的值
+                    navVo.setNavValue(brandVo.getName());
+                    // 设置 NavVo对象 的 link属性 : 取消当前面包屑导航后，页面跳转的地址
+                    // 清除地址中当前属性的请求参数 - 获取所有的请求参数，清除当前属性的请求参数
+                    String replace = replaceQueryString(param, brandVo.getBrandId() + "", "brandId");
+                    navVo.setLink("http://search.gulimall.com/list.html?" + replace);
+                }
+            }
+            // 封装 面包屑导航数据
+            result.getNavs().add(navVo);
+        }
+
         return result;
+    }
+
+    // 清除地址中当前属性的请求参数 - 获取所有的请求参数，清除当前属性的请求参数
+    private String replaceQueryString(SearchParam param, String value, String key) {
+        String encode = null;
+        try {
+            encode = URLEncoder.encode(value, "UTF-8");
+            // 浏览器把空格翻译成'%20'，而Java把空格翻译成'+'
+            encode = encode.replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return param.get_queryString().replace("&" + key + "=" + encode, "");
     }
 
     /**
      * 构建检索请求
-     * <p>
-     * 模糊匹配
-     * 过滤 (按照属性、分类、品牌、价格区间、库存)
-     * 排序
-     * 分页
-     * 高亮
-     * 聚合分析
-     * <p>
+     *   模糊匹配
+     *   过滤 (按照属性、分类、品牌、价格区间、库存)
+     *   排序
+     *   分页
+     *   高亮
+     *   聚合分析
+     *
      * DSL语句示例 : dsl.json
      */
     private SearchRequest buildSearchRequest(SearchParam param) {

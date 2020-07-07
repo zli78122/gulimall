@@ -18,8 +18,14 @@ public class SearchController {
 
     @GetMapping("/list.html")
     public String listPage(SearchParam param, Model model, HttpServletRequest request) {
+        // 获取查询字符串
+        String queryString = request.getQueryString();
+        param.set_queryString(queryString);
+
+        // 检索
         SearchResult result = mallSearchService.search(param);
         model.addAttribute("result", result);
+
         return "list";
     }
 }

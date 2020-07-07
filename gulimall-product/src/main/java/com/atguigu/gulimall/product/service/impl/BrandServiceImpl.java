@@ -4,6 +4,7 @@ import com.atguigu.gulimall.product.service.CategoryBrandRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -24,6 +25,15 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
 
+    // 根据 brandIds 获取 品牌信息
+    @Override
+    public List<BrandEntity> getBrandsByIds(List<Long> brandIds) {
+        QueryWrapper<BrandEntity> wrapper = new QueryWrapper<>();
+        wrapper.in("brand_id", brandIds);
+        List<BrandEntity> list = baseMapper.selectList(wrapper);
+        return list;
+    }
+
     // 级联更新
     @Transactional
     @Override
@@ -33,7 +43,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
 
         if (!StringUtils.isEmpty(brand.getName())) {
             // 同步更新其他关联表中的数据 (级联更新)
-            categoryBrandRelationService.updateBrand(brand.getBrandId(),brand.getName());
+            categoryBrandRelationService.updateBrand(brand.getBrandId(), brand.getName());
         }
     }
 

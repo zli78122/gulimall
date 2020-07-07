@@ -54,6 +54,6 @@ public class SearchParam {
     // 页码
     private Integer pageNum = 1;
 
-    // 原生的所有查询字符串
+    // 查询字符串
     private String _queryString;
 }

@@ -759,6 +759,13 @@
                 <a href="/static/search/#">游戏手机</a>
             </div>
         </div>
+        <!--面包屑导航-->
+        <div class="JD_ipone_one c">
+            <a th:each="nav : ${result.navs}" th:href="${nav.link}">
+                <span th:text="${nav.navName}"></span>：<span th:text="${nav.navValue}"></span>
+                ×
+            </a>
+        </div>
         <i><img src="/static/search/image/right-@1x.png" alt=""></i>
     </div>
 </div>
@@ -772,9 +779,9 @@
                 <h3><b>手机</b><em>商品筛选</em></h3>
                 <div class="st-ext">共&nbsp;<span>10135</span>个商品</div>
             </div>
-            <div class="JD_nav_logo">
+            <div class="JD_nav_logo" th:with="brandId = ${param.brandId}">
                 <!--品牌-->
-                <div class="JD_nav_wrap">
+                <div class="JD_nav_wrap" th:if="${#strings.isEmpty(brandId)}">
                     <div class="sl_key">
                         <span><b>品牌：</b></span>
                     </div>
@@ -831,7 +838,7 @@
                     </div>
                 </div>
                 <!--所有需要展示的商品属性-->
-                <div class="JD_pre" th:each="attr : ${result.attrs}">
+                <div class="JD_pre" th:if="${!#lists.contains(result.attrIds,attr.attrId)}" th:each="attr : ${result.attrs}">
                     <div class="sl_key">
                         <span th:text="${attr.attrName}">屏幕尺寸：</span>
                     </div>

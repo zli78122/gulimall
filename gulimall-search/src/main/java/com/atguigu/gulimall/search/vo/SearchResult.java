@@ -27,20 +27,21 @@ public class SearchResult {
     // 当前查询到的结果所涉及到的所有属性
     private List<AttrVo> attrs;
 
-    //================以上是返回给页面的所有信息=============================
+    // 面包屑导航数据
+    private List<NavVo> navs = new ArrayList<>();
 
-//    //面包屑导航数据
-//    private List<NavVo> navs = new ArrayList<>();
-//
-//    //已选择的属性
-//    private List<Long> attrIds = new ArrayList<>();
-//
-//    @Data
-//    public static class NavVo {
-//        private String navName;
-//        private String navValue;
-//        private String link;
-//    }
+    // 已选择的所有属性 - 请求参数中包含的所有属性
+    private List<Long> attrIds = new ArrayList<>();
+
+    /**
+     * 面包屑导航数据
+     */
+    @Data
+    public static class NavVo {
+        private String navName;
+        private String navValue;
+        private String link;
+    }
 
     /**
      * 品牌信息

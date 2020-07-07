@@ -14,6 +14,7 @@ import com.atguigu.gulimall.product.vo.AttrVo;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -182,6 +183,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     // 根据 id 查询
+    @Cacheable(value = "attr", key = "'attrinfo:' + #root.args[0]")
     @Override
     public AttrRespVo getAttrInfo(Long attrId) {
         // 1.查询 基本信息
