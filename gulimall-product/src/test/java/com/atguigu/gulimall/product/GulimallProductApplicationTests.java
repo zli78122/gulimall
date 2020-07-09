@@ -1,7 +1,11 @@
 package com.atguigu.gulimall.product;
 
+import com.atguigu.gulimall.product.dao.AttrGroupDao;
+import com.atguigu.gulimall.product.dao.SkuSaleAttrValueDao;
 import com.atguigu.gulimall.product.entity.BrandEntity;
 import com.atguigu.gulimall.product.service.BrandService;
+import com.atguigu.gulimall.product.vo.SkuItemSaleAttrVo;
+import com.atguigu.gulimall.product.vo.SpuItemAttrGroupVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +30,24 @@ public class GulimallProductApplicationTests {
 
     @Autowired
     RedissonClient redissonClient;
+
+    @Autowired
+    AttrGroupDao attrGroupDao;
+
+    @Autowired
+    SkuSaleAttrValueDao skuSaleAttrValueDao;
+
+    @Test
+    public void test6() {
+        List<SkuItemSaleAttrVo> skuItemSaleAttrVos = skuSaleAttrValueDao.getSaleAttrsBySpuId(3L);
+        System.out.println(skuItemSaleAttrVos);
+    }
+
+    @Test
+    public void test5() {
+        List<SpuItemAttrGroupVo> spuItemAttrGroupVos = attrGroupDao.getAttrGroupWithAttrsBySpuId(3L, 225L);
+        System.out.println(spuItemAttrGroupVos);
+    }
 
     @Test
     public void test4() {
@@ -53,5 +75,4 @@ public class GulimallProductApplicationTests {
         brandService.save(brandEntity);
         System.out.println("保存成功....");
     }
-
 }

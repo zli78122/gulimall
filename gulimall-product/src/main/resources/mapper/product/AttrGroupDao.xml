@@ -13,5 +13,29 @@
         <result property="catelogId" column="catelog_id"/>
     </resultMap>
 
+    <resultMap id="spuItemAttrGroupVo" type="com.atguigu.gulimall.product.vo.SpuItemAttrGroupVo">
+        <result property="groupName" column="attr_group_name"></result>
+        <collection property="attrs" ofType="com.atguigu.gulimall.product.vo.Attr">
+            <result property="attrId" column="attr_id"></result>
+            <result property="attrName" column="attr_name"></result>
+            <result property="attrValue" column="attr_value"></result>
+        </collection>
+    </resultMap>
+
+    <!-- 获取 商品的所有属性分组信息以及每个属性分组下所有属性信息 -->
+    <select id="getAttrGroupWithAttrsBySpuId" resultMap="spuItemAttrGroupVo">
+        SELECT
+            pav.`spu_id`,
+            ag.`attr_group_id`,
+            ag.`attr_group_name`,
+            aar.`attr_id`,
+            attr.`attr_name`,
+            pav.`attr_value`
+        FROM `pms_attr_group` AS ag
+        LEFT JOIN `pms_attr_attrgroup_relation` AS aar ON aar.attr_group_id=ag.attr_group_id
+        LEFT JOIN `pms_attr` AS attr ON attr.attr_id=aar.attr_id
+        LEFT JOIN `pms_product_attr_value` AS pav ON pav.attr_id=attr.attr_id
+        WHERE ag.catelog_id=#{catalogId} AND pav.spu_id=#{spuId}
+    </select>
 
 </mapper>

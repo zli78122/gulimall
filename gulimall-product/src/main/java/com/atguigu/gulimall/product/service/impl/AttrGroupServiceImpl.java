@@ -3,6 +3,7 @@ package com.atguigu.gulimall.product.service.impl;
 import com.atguigu.gulimall.product.entity.AttrEntity;
 import com.atguigu.gulimall.product.service.AttrService;
 import com.atguigu.gulimall.product.vo.AttrGroupWithAttrsVo;
+import com.atguigu.gulimall.product.vo.SpuItemAttrGroupVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,13 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
     @Autowired
     private AttrService attrService;
 
+    // 获取 商品的所有属性分组信息以及每个属性分组下所有属性信息
+    @Override
+    public List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catalogId) {
+        List<SpuItemAttrGroupVo> vos = this.baseMapper.getAttrGroupWithAttrsBySpuId(spuId, catalogId);
+        return vos;
+    }
+
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<AttrGroupEntity> page = this.page(
@@ -47,7 +55,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         // 查询 每个属性分组下 所有 属性(Attr)
         List<AttrGroupWithAttrsVo> vos = attrGroupEntities.stream().map(item -> {
             AttrGroupWithAttrsVo attrsVo = new AttrGroupWithAttrsVo();
-            BeanUtils.copyProperties(item,attrsVo);
+            BeanUtils.copyProperties(item, attrsVo);
             // 根据 attrGroupId 查询 Attr对象
             List<AttrEntity> attrs = attrService.getRelationAttr(attrsVo.getAttrGroupId());
             attrsVo.setAttrs(attrs);
