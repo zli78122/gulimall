@@ -16,5 +16,7 @@ import java.util.Map;
 public interface MemberLevelService extends IService<MemberLevelEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
-}
 
+    // 获取 会员的默认等级
+    MemberLevelEntity getDefaultLevel();
+}

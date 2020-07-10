@@ -16,6 +16,12 @@ import com.atguigu.gulimall.member.service.MemberLevelService;
 @Service("memberLevelService")
 public class MemberLevelServiceImpl extends ServiceImpl<MemberLevelDao, MemberLevelEntity> implements MemberLevelService {
 
+    // 获取 会员的默认等级
+    @Override
+    public MemberLevelEntity getDefaultLevel() {
+        return baseMapper.getDefaultLevel();
+    }
+
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<MemberLevelEntity> page = this.page(
@@ -25,5 +31,4 @@ public class MemberLevelServiceImpl extends ServiceImpl<MemberLevelDao, MemberLe
 
         return new PageUtils(page);
     }
-
 }
