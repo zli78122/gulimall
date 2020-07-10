@@ -10,6 +10,13 @@ spring:
   redis:
     host: 192.168.56.200
     port: 6379
+  session:
+    # Spring Session \u5B58\u50A8\u7C7B\u578B : redis
+    store-type: redis
 
 server:
   port: 20000
+  servlet:
+    session:
+      # Session \u8D85\u65F6\u65F6\u95F4 : 30m
+      timeout: 30m

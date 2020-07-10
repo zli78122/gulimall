@@ -1,9 +1,11 @@
 package com.atguigu.gulimall.auth.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.constant.AuthServerConstant;
 import com.atguigu.common.utils.HttpUtils;
 import com.atguigu.common.utils.R;
+import com.atguigu.common.vo.MemberResponseVO;
 import com.atguigu.gulimall.auth.feign.MemberFeignService;
 import com.atguigu.gulimall.auth.vo.SocialUser;
 import org.apache.http.HttpResponse;
@@ -23,6 +25,9 @@ public class OAuth2Controller {
     @Autowired
     private MemberFeignService memberFeignService;
 
+    /**
+     * 社交登录 - 微博登录
+     */
     @GetMapping("/oauth2.0weibo/success")
     public String weibo(@RequestParam("code") String code, HttpSession session) throws Exception {
         Map<String, String> map = new HashMap<>();
@@ -43,12 +48,11 @@ public class OAuth2Controller {
 
             if (loginR.getCode() == 0) {
                 // 登录成功
-
-//                MemberResponseVO loginUser = loginR.getData(new TypeReference<MemberResponseVO>() {
-//                });
-//                // session 子域共享问题
-//                session.setAttribute(AuthServerConstant.LOGIN_USER, loginUser);
-
+                // 从 loginR 中获取 loginUser
+                MemberResponseVO loginUser = loginR.getData(new TypeReference<MemberResponseVO>() {
+                });
+                // 将 用户登录信息(loginUser) 存储到 Session 中
+                session.setAttribute(AuthServerConstant.LOGIN_USER, loginUser);
                 // 跳转到网站首页
                 return "redirect:http://gulimall.com";
             } else {

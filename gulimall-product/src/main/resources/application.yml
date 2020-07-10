@@ -27,6 +27,9 @@ spring:
       use-key-prefix: true
       # 是否缓存空值
       cache-null-values: true
+  session:
+    # Spring Session 存储类型 : redis
+    store-type: redis
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml

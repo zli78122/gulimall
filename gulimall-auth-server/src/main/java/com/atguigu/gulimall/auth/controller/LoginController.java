@@ -4,6 +4,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.constant.AuthServerConstant;
 import com.atguigu.common.exception.BizCodeEnum;
 import com.atguigu.common.utils.R;
+import com.atguigu.common.vo.MemberResponseVO;
 import com.atguigu.gulimall.auth.feign.MemberFeignService;
 import com.atguigu.gulimall.auth.feign.ThirdPartyFeignService;
 import com.atguigu.gulimall.auth.vo.UserLoginVo;
@@ -53,9 +54,11 @@ public class LoginController {
         if (loginR.getCode() == 0) {
             // 登录成功
             // 从 loginR 中获取 loginUser
-//            MemberResponseVO loginUser = loginR.getData(new TypeReference<MemberResponseVO>() {
-//            });
-//            session.setAttribute(AuthServerConstant.LOGIN_USER, loginUser);
+            MemberResponseVO loginUser = loginR.getData(new TypeReference<MemberResponseVO>() {
+            });
+            // 将 用户登录信息(loginUser) 存储到 Session 中
+            session.setAttribute(AuthServerConstant.LOGIN_USER, loginUser);
+            // 跳转到网站首页
             return "redirect:http://gulimall.com";
         } else {
             // 登录失败
