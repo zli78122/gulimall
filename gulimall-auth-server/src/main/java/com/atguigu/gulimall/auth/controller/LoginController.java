@@ -6,6 +6,7 @@ import com.atguigu.common.exception.BizCodeEnum;
 import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.auth.feign.MemberFeignService;
 import com.atguigu.gulimall.auth.feign.ThirdPartyFeignService;
+import com.atguigu.gulimall.auth.vo.UserLoginVo;
 import com.atguigu.gulimall.auth.vo.UserRegisterVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +38,36 @@ public class LoginController {
 
     @Resource
     private MemberFeignService memberFeignService;
+
+    /**
+     * 登录
+     *
+     * @param vo                 登录VO
+     * @param redirectAttributes 重定向 携带数据 - 实现请求重定向时的数据共享
+     * @param session            Session
+     * @return
+     */
+    @PostMapping("/login")
+    public String login(UserLoginVo vo, RedirectAttributes redirectAttributes, HttpSession session) {
+        R loginR = memberFeignService.login(vo);
+        if (loginR.getCode() == 0) {
+            // 登录成功
+            // 从 loginR 中获取 loginUser
+//            MemberResponseVO loginUser = loginR.getData(new TypeReference<MemberResponseVO>() {
+//            });
+//            session.setAttribute(AuthServerConstant.LOGIN_USER, loginUser);
+            return "redirect:http://gulimall.com";
+        } else {
+            // 登录失败
+            Map<String, String> errors = new HashMap<>();
+            // 从 loginR 中获取 错误消息
+            errors.put("msg", loginR.getData("msg", new TypeReference<String>() {
+            }));
+            // 重定向 携带数据 - 实现请求重定向时的数据共享
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:http://auth.gulimall.com/login.html";
+        }
+    }
 
     /**
      * 注册

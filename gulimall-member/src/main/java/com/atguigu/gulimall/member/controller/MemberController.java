@@ -6,7 +6,9 @@ import java.util.Map;
 import com.atguigu.common.exception.BizCodeEnum;
 import com.atguigu.gulimall.member.exception.PhoneExistException;
 import com.atguigu.gulimall.member.exception.UserNameExistException;
+import com.atguigu.gulimall.member.vo.MemberLoginVo;
 import com.atguigu.gulimall.member.vo.MemberRegisterVo;
+import com.atguigu.gulimall.member.vo.SocialUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,32 @@ import com.atguigu.common.utils.R;
 public class MemberController {
     @Autowired
     private MemberService memberService;
+
+    /**
+     * 社交登录
+     */
+    @PostMapping("/oauth2/login")
+    public R oauthLogin(@RequestBody SocialUser socialUser) throws Exception {
+        MemberEntity entity = memberService.login(socialUser);
+        if (entity != null) {
+            return R.ok().setData(entity);
+        } else {
+            return R.error(BizCodeEnum.LOGINACCT_PASSWORD_INVALID_EXCEPTION.getCode(), BizCodeEnum.LOGINACCT_PASSWORD_INVALID_EXCEPTION.getMsg());
+        }
+    }
+
+    /**
+     * 登录
+     */
+    @PostMapping("/login")
+    public R login(@RequestBody MemberLoginVo vo) {
+        MemberEntity entity = memberService.login(vo);
+        if (entity != null) {
+            return R.ok().setData(entity);
+        } else {
+            return R.error(BizCodeEnum.LOGINACCT_PASSWORD_INVALID_EXCEPTION.getCode(), BizCodeEnum.LOGINACCT_PASSWORD_INVALID_EXCEPTION.getMsg());
+        }
+    }
 
     /**
      * 注册
