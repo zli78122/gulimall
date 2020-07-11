@@ -60,11 +60,12 @@
             </div>
         </b>
         <ul>
-            <li>
-                <a href="/static/search/#" class="li_2">你好，请登录</a>
+            <li style="border: 0; width: 100px">
+                <a th:if="${session.loginUser != null}" style="color: red" class="li_2">欢迎: [[${session.loginUser == null ? '' : session.loginUser.nickname}]]</a>
+                <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/login.html" style="color: red" class="li_2">你好，请登录</a>
             </li>
             <li>
-                <a href="/static/search/#">免费注册</a>
+                <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/reg.html" style="color: red;">免费注册</a>
             </li>
             <span>|</span>
             <li>
