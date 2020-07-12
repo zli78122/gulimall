@@ -10,29 +10,19 @@ public interface CartService {
     // 将商品添加到购物车
     CartItem addToCart(Long skuId, Integer num) throws ExecutionException, InterruptedException;
 
-    /**
-     * 获取购物车中某个购物项
-     */
+    // 根据 skuId 查询 购物项
     CartItem getCartItem(Long skuId);
 
-    /**
-     * 获取整个购物车
-     */
+    // 获取购物车信息
     Cart getCart() throws ExecutionException, InterruptedException;
 
-    /**
-     * 清空购物车
-     */
+    // 清空购物车
     void clearCart(String cartKey);
 
-    /**
-     * 购物车勾选购物项
-     */
+    // 改变购物项的选中状态
     void checkItem(Long skuId, Integer check);
 
-    /**
-     * 修改购物项数量
-     */
+    // 修改购物项的数量
     void changeItemCount(Long skuId, Integer num);
 
     // 删除购物项

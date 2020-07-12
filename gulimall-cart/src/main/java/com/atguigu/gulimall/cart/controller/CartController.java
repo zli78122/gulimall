@@ -28,7 +28,7 @@ public class CartController {
     }
 
     /**
-     * 改变商品数量
+     * 修改购物项的数量
      */
     @GetMapping("/countItem")
     public String countItem(@RequestParam("skuId") Long skuId,
@@ -38,24 +38,22 @@ public class CartController {
     }
 
     /**
-     * 购物车勾选商品
+     * 改变购物项的选中状态
      */
     @GetMapping("/checkItem")
     public String checkItem(@RequestParam("skuId") Long skuId,
                             @RequestParam("check") Integer check) {
 
         cartService.checkItem(skuId, check);
-
-        //重定向到购物车列表页    刷新
         return "redirect:http://cart.gulimall.com/cart.html";
     }
 
     /**
-     * 添加商品到购物车
-     * <p>
-     * RedirectAttributes   ： 重定向的属性对象 - 重定向携带数据
-     * addFlashAttribute(); 将数据放在session中，可以在页面取出，但是只能取一次
-     * addAttribute("skuId",skuId);   将数据放在url后面
+     * 将商品添加到购物车
+     *
+     * RedirectAttributes 重定向 携带数据 - 实现请求重定向时的数据共享
+     *   addFlashAttribute() : 将数据放在Session中
+     *   addAttribute() : 将数据作为请求参数放在URL后面
      */
     @GetMapping("/addToCart")
     public String addToCart(@RequestParam("skuId") Long skuId,
@@ -69,30 +67,26 @@ public class CartController {
     }
 
     /**
-     * 跳转到成功页
+     * 根据 skuId 查询 购物项，并跳转到 购物车添加成功页面 (success.html)
      */
     @GetMapping("/addToCartSuccess.html")
     public String addToCartSuccessPage(@RequestParam("skuId") Long skuId, Model model) {
-        //再次查询购物车数据
+        // 根据 skuId 查询 购物项
         CartItem cartItem = cartService.getCartItem(skuId);
         model.addAttribute("item", cartItem);
+        // 跳转到 购物车添加成功页面 (success.html)
         return "success";
     }
 
     /**
-     * 浏览器有一个cookie: user-key: 标识用户身份，一个月后过期
-     * 如果第一次使用京东的购物车，都会给一个临时的用户身份
-     * 浏览器以后保持，每次访问都会带上
-     * <p>
-     * 登录：session有
-     * 没登录: 按照cookie里面带来user-key来做
-     * <p>
-     * 第一次：如果没有临时用户，帮忙创建一个临时用户
+     * 获取购物车信息，并跳转到购物车页面 (cartList.html)
      */
     @GetMapping("/cart.html")
     public String cartListPage(Model model) throws ExecutionException, InterruptedException {
+        // 获取购物车信息
         Cart cart = cartService.getCart();
         model.addAttribute("cart", cart);
+        // 跳转到购物车页面 (cartList.html)
         return "cartList";
     }
 }
