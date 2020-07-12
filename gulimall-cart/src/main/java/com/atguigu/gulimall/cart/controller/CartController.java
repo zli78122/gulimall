@@ -53,7 +53,7 @@ public class CartController {
      *
      * RedirectAttributes : 重定向 携带数据 - 实现请求重定向时的数据共享
      *   addFlashAttribute() : 将数据放在Session中
-     *   addAttribute() : 将数据作为请求参数放在URL后面
+     *   addAttribute()      : 将数据作为请求参数放在URL后面
      */
     @GetMapping("/addToCart")
     public String addToCart(@RequestParam("skuId") Long skuId,

@@ -209,9 +209,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-    /**
-     * 获取 BoundHashOperations对象，用于操作存储在Redis中的购物车数据
-     */
+    // 获取 BoundHashOperations对象，用于操作存储在Redis中的购物车数据
     private BoundHashOperations<String, Object, Object> getCartOps() {
         // 从 ThreadLocal 中获取 userInfoTo
         UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
