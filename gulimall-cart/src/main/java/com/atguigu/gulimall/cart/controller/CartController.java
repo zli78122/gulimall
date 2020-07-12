@@ -51,7 +51,7 @@ public class CartController {
     /**
      * 将商品添加到购物车
      *
-     * RedirectAttributes 重定向 携带数据 - 实现请求重定向时的数据共享
+     * RedirectAttributes : 重定向 携带数据 - 实现请求重定向时的数据共享
      *   addFlashAttribute() : 将数据放在Session中
      *   addAttribute() : 将数据作为请求参数放在URL后面
      */
@@ -60,9 +60,10 @@ public class CartController {
                             @RequestParam("num") Integer num,
                             RedirectAttributes ra) throws ExecutionException, InterruptedException {
 
+        // 将商品添加到购物车
         cartService.addToCart(skuId, num);
+        // 将 skuId 作为请求参数放在URL后面
         ra.addAttribute("skuId", skuId);
-        //重定向到添加商品到购物车成功页面。。 防止刷新重复提交添加请求
         return "redirect:http://cart.gulimall.com/addToCartSuccess.html";
     }
 
