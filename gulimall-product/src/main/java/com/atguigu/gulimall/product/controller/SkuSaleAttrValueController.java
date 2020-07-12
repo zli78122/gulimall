@@ -1,21 +1,16 @@
 package com.atguigu.gulimall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.atguigu.gulimall.product.entity.SkuSaleAttrValueEntity;
 import com.atguigu.gulimall.product.service.SkuSaleAttrValueService;
 import com.atguigu.common.utils.PageUtils;
 import com.atguigu.common.utils.R;
-
-
 
 /**
  * sku销售属性&值
@@ -31,24 +26,31 @@ public class SkuSaleAttrValueController {
     private SkuSaleAttrValueService skuSaleAttrValueService;
 
     /**
+     * 根据 skuId 获取 商品的所有销售属性的属性值
+     */
+    @GetMapping("/stringlist/{skuId}")
+    public List<String> getSkuSaleAttrValues(@PathVariable Long skuId) {
+        return skuSaleAttrValueService.getSkuSaleAttrValuesAsStringList(skuId);
+    }
+
+    /**
      * 列表
      */
     @RequestMapping("/list")
     //@RequiresPermissions("product:skusaleattrvalue:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = skuSaleAttrValueService.queryPage(params);
 
         return R.ok().put("page", page);
     }
-
 
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
     //@RequiresPermissions("product:skusaleattrvalue:info")
-    public R info(@PathVariable("id") Long id){
-		SkuSaleAttrValueEntity skuSaleAttrValue = skuSaleAttrValueService.getById(id);
+    public R info(@PathVariable("id") Long id) {
+        SkuSaleAttrValueEntity skuSaleAttrValue = skuSaleAttrValueService.getById(id);
 
         return R.ok().put("skuSaleAttrValue", skuSaleAttrValue);
     }
@@ -58,8 +60,8 @@ public class SkuSaleAttrValueController {
      */
     @RequestMapping("/save")
     //@RequiresPermissions("product:skusaleattrvalue:save")
-    public R save(@RequestBody SkuSaleAttrValueEntity skuSaleAttrValue){
-		skuSaleAttrValueService.save(skuSaleAttrValue);
+    public R save(@RequestBody SkuSaleAttrValueEntity skuSaleAttrValue) {
+        skuSaleAttrValueService.save(skuSaleAttrValue);
 
         return R.ok();
     }
@@ -69,8 +71,8 @@ public class SkuSaleAttrValueController {
      */
     @RequestMapping("/update")
     //@RequiresPermissions("product:skusaleattrvalue:update")
-    public R update(@RequestBody SkuSaleAttrValueEntity skuSaleAttrValue){
-		skuSaleAttrValueService.updateById(skuSaleAttrValue);
+    public R update(@RequestBody SkuSaleAttrValueEntity skuSaleAttrValue) {
+        skuSaleAttrValueService.updateById(skuSaleAttrValue);
 
         return R.ok();
     }
@@ -80,10 +82,9 @@ public class SkuSaleAttrValueController {
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("product:skusaleattrvalue:delete")
-    public R delete(@RequestBody Long[] ids){
-		skuSaleAttrValueService.removeByIds(Arrays.asList(ids));
+    public R delete(@RequestBody Long[] ids) {
+        skuSaleAttrValueService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }
-
 }

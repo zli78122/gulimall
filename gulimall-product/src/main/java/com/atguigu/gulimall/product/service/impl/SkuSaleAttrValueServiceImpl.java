@@ -19,6 +19,12 @@ import com.atguigu.gulimall.product.service.SkuSaleAttrValueService;
 @Service("skuSaleAttrValueService")
 public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao, SkuSaleAttrValueEntity> implements SkuSaleAttrValueService {
 
+    // 根据 skuId 获取 商品的所有销售属性的属性值
+    @Override
+    public List<String> getSkuSaleAttrValuesAsStringList(Long skuId) {
+        return this.baseMapper.getSkuSaleAttrValuesAsStringList(skuId);
+    }
+
     // 根据 spuId 获取 商品的销售属性信息
     @Override
     public List<SkuItemSaleAttrVo> getSaleAttrsBySpuId(Long spuId) {
