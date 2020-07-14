@@ -1,9 +1,32 @@
 spring:
+  application:
+    name: gulimall-order
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://192.168.56.200:3306/gulimall_oms
-    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.56.200:3306/gulimall_oms?serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  rabbitmq:
+    host: 192.168.56.200
+    port: 5672
+    virtual-host: /
+    username: guest
+    password: guest
+    # 开启 Publisher confirmCallback 确认模式 - 消息只要被 Broker 接收到就会触发 confirmCallback
+    publisher-confirms: true
+    # 开启 Publisher returnCallback 退回模式 - 消息未被成功投递到 Queue 时会触发 returnCallback (如果成功投递到 Queue，就不会触发 returnCallback)
+    publisher-returns: true
+    # 只要消息抵达 Queue，就以异步方式优先回调 returnCallback()
+    template:
+      mandatory: true
+    # 开启手动 Ack 模式
+    listener:
+      simple:
+        acknowledge-mode: manual
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
