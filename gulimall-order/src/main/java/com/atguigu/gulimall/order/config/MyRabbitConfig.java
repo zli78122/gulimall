@@ -33,7 +33,7 @@ public class MyRabbitConfig {
      *   confirmCallback (回调方法) - 消息只要被 Broker 接收到就会触发 confirmCallback
      *   returnCallback  (回调方法) - 消息未被成功投递到 Queue 时会触发 returnCallback (如果成功投递到 Queue，就不会触发 returnCallback)
      */
-    @PostConstruct //MyRabbitConfig类对象 创建完成之后执行 initRabbitTemplate()
+    @PostConstruct   // MyRabbitConfig类对象 创建完成之后执行 initRabbitTemplate()
     public void initRabbitTemplate() {
         // confirmCallback 确认模式
         rabbitTemplate.setConfirmCallback(new RabbitTemplate.ConfirmCallback() {
@@ -64,7 +64,7 @@ public class MyRabbitConfig {
              */
             @Override
             public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
-                // 消息投递失败 -> 修改数据库当前消息的状态
+                // 消息投递失败 -> 修改数据库当前消息的状态 ...
             }
         });
     }
