@@ -76,7 +76,28 @@ public class RabbitMQReceiver {
      * @param channel 传输当前消息的信道
      */
     @RabbitHandler
-    public void receiveMessage(Message message, OrderEntity order, Channel channel) {
+    public void receiveMessage(Message message, OrderEntity order, Channel channel) throws IOException {
         System.out.println("Message Content: " + order);
+
+        // 消息属性信息
+        MessageProperties properties = message.getMessageProperties();
+
+        // deliveryTag : 同一信道(Channel)内 按顺序自增 (可以根据 deliveryTag 找到 信道内的当前消息)
+        long deliveryTag = properties.getDeliveryTag();
+        try {
+            // 签收消息
+            //   deliveryTag : 同一信道(Channel)内 按顺序自增 (可以根据 deliveryTag 找到 信道内的当前消息)
+            //   multiple    : 是否批量签收。multiple = false 表示只签收当前消息 (非批量模式签收消息)。通常 multiple = false
+            channel.basicAck(deliveryTag, false);
+        } catch (IOException e) {
+            // 出现异常 (网络中断)
+            e.printStackTrace();
+
+            // 拒收消息
+            //   deliveryTag : 同一信道(Channel)内 按顺序自增 (可以根据 deliveryTag 找到 信道内的当前消息)
+            //   multiple    : 是否批量拒收。multiple = false 表示只拒收当前消息 (非批量模式拒收消息)。通常 multiple = false
+            //   requeue     : 被拒收的当前消息是否重新入队。requeue = true : 发回服务器重新入队。requeue = false : 丢弃当前消息
+            channel.basicNack(deliveryTag, false, true);
+        }
     }
 }
