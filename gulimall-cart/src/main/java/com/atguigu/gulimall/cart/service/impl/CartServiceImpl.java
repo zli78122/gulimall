@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +37,35 @@ public class CartServiceImpl implements CartService {
     private ThreadPoolExecutor executor;
 
     private final String CART_PREFIX = "gulimall:cart:";
+
+    // 获取当前用户选中的所有购物项
+    @Override
+    public List<CartItem> getUserCartItems() {
+        // 从 ThreadLocal 中获取 userInfoTo
+        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+
+        if (userInfoTo.getUserId() == null) {
+            // 用户未登录
+            return null;
+        } else {
+            // 用户已登录
+            String cartKey = CART_PREFIX + userInfoTo.getUserId();
+            // 获取购物车的所有购物项
+            List<CartItem> cartItems = getCartItems(cartKey);
+            // 获取购物车中所有被选中的购物项
+            List<CartItem> collect = cartItems.stream()
+                    .filter(item -> item.getCheck())
+                    .map(item -> {
+                        // 获取商品的最新价格
+                        R skuPrice = productFeignService.getSkuPrice(item.getSkuId());
+                        String price = (String) skuPrice.get("data");
+                        item.setPrice(new BigDecimal(price));
+                        return item;
+                    })
+                    .collect(Collectors.toList());
+            return collect;
+        }
+    }
 
     // 删除购物项
     @Override

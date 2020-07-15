@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Controller
@@ -17,6 +19,15 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+
+    /**
+     * 获取当前用户选中的所有购物项
+     */
+    @GetMapping("/currentUserCartItems")
+    @ResponseBody
+    public List<CartItem> getCurrentUserCartItems() {
+        return cartService.getUserCartItems();
+    }
 
     /**
      * 删除购物项
@@ -50,10 +61,10 @@ public class CartController {
 
     /**
      * 将商品添加到购物车
-     *
+     * <p>
      * RedirectAttributes : 重定向 携带数据 - 实现请求重定向时的数据共享
-     *   addFlashAttribute() : 将数据放在Session中
-     *   addAttribute()      : 将数据作为请求参数放在URL后面
+     * addFlashAttribute() : 将数据放在Session中
+     * addAttribute()      : 将数据作为请求参数放在URL后面
      */
     @GetMapping("/addToCart")
     public String addToCart(@RequestParam("skuId") Long skuId,

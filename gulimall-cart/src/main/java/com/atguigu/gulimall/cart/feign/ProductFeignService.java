@@ -22,4 +22,10 @@ public interface ProductFeignService {
      */
     @GetMapping("/product/skusaleattrvalue/stringlist/{skuId}")
     List<String> getSkuSaleAttrValues(@PathVariable("skuId") Long skuId);
+
+    /**
+     * 获取商品的最新价格
+     */
+    @GetMapping("/product/skuinfo/{skuId}/price")
+    R getSkuPrice(@PathVariable("skuId") Long skuId);
 }

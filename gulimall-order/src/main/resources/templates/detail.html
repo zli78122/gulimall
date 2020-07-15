@@ -14,7 +14,7 @@
         <div class="min">
             <ul class="header_ul_left">
                 <li class="glyphicon glyphicon-home">
-                    <a href="/static/order/detail/shouye.html" class="aa">谷粒商城首页</a>
+                    <a href="http://gulimall.com/" class="aa">谷粒商城首页</a>
                 </li>
                 <li class="glyphicon glyphicon-map-marker">
                     <a href="/static/order/detail/javascript:;">北京</a>
@@ -128,14 +128,15 @@
                 </li>
             </ul>
             <ul class="header_ul_right">
-                <li style="border: 0;">
-                    <a href="/static/order/detail/denglu.html" class="aa">你好，请登录</a>
+                <li style="border: 0; width: 100px">
+                    <a th:if="${session.loginUser != null}" style="color: red">欢迎: [[${session.loginUser == null ? '' : session.loginUser.nickname}]]</a>
+                    <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/login.html" style="color: red">你好，请登录</a>
+                </li>
+                <li th:if="${session.loginUser == null}">
+                    <a href="http://auth.gulimall.com/reg.html" class="li_2">免费注册</a> |
                 </li>
                 <li>
-                    <a href="/static/order/detail/javascript:;" style="color: red;">免费注册</a> |
-                </li>
-                <li>
-                    <a href="/static/order/detail/javascript:;" class="aa">我的订单</a> |
+                    <a href="http://order.gulimall.com/list.html" class="aa">我的订单</a> |
                 </li>
                 <li class="jingdong" style="width:95px;">
                     <a href="/static/order/detail/javascript:;">我的谷粒商城</a><span class="glyphicon glyphicon-menu-down">|</span>
