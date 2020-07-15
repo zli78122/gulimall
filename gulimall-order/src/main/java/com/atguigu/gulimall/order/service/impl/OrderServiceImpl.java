@@ -62,7 +62,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
          *     Feign远程调用请求 是由 分线程(异步任务) 发出的
          *     只有主线程可以得到 原始请求的上下文信息，分线程无法获得主线程中的数据，所以分线程无法得到 原始请求的上下文信息
          *     正因为 分线程(异步任务) 没有 原始请求的上下文信息
-         *     所以，在分线程在发出 Feign远程调用请求 时，Feign远程调用会丢失原始请求的请求上下文信息
+         *     所以，在分线程在发出 Feign远程调用请求 时，Feign远程调用 会丢失 原始请求的请求上下文信息
          *
          *   这个问题引发的结果 :
          *     Feign远程调用其他微服务，其他微服务无法从Feign请求中获取 原始请求的相关数据 (比如 : Cookie 请求头)
