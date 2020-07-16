@@ -58,14 +58,12 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         }).collect(Collectors.toList());
 
         // 锁定库存
-        // 标识 是否所有订单项都可以锁定成功
-        Boolean allLock = true;
         for (SkuWareHasStock hasStock : collect) {
             Boolean skuStocked = false;
             Long skuId = hasStock.getSkuId();
             List<Long> wareIds = hasStock.getWareId();
             if (wareIds == null || wareIds.size() == 0) {
-                // 没有任何仓库有当前商品
+                // 没有任何仓库有当前商品 -> 当前商品锁定失败 -> 全局锁定失败 -> 抛出 NoStockException异常
                 throw new NoStockException(skuId);
             }
             for (Long wareId : wareIds) {
@@ -87,7 +85,7 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
                 throw new NoStockException(skuId);
             }
         }
-        // 全部商品锁定成功
+        // 全部商品锁定成功 -> 全局锁定成功
         return true;
     }
 
