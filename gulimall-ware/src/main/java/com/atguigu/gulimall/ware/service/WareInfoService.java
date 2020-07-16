@@ -1,5 +1,6 @@
 package com.atguigu.gulimall.ware.service;
 
+import com.atguigu.gulimall.ware.vo.FareVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.common.utils.PageUtils;
 import com.atguigu.gulimall.ware.entity.WareInfoEntity;
@@ -17,4 +18,7 @@ public interface WareInfoService extends IService<WareInfoEntity> {
 
     // 分页条件查询
     PageUtils queryPage(Map<String, Object> params);
+
+    // 根据 收货地址 计算 运费
+    FareVo getFare(Long addrId);
 }

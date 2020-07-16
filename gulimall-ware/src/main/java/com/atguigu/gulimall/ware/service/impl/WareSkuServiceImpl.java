@@ -1,8 +1,15 @@
 package com.atguigu.gulimall.ware.service.impl;
 
+import com.atguigu.common.exception.NoStockException;
 import com.atguigu.common.utils.R;
+import com.atguigu.gulimall.ware.entity.WareOrderTaskDetailEntity;
+import com.atguigu.gulimall.ware.entity.WareOrderTaskEntity;
 import com.atguigu.gulimall.ware.feign.ProductFeignService;
+import com.atguigu.gulimall.ware.vo.OrderItemVo;
 import com.atguigu.gulimall.ware.vo.SkuHasStockVo;
+import com.atguigu.gulimall.ware.vo.WareSkuLockVo;
+import lombok.Data;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +26,7 @@ import com.atguigu.common.utils.Query;
 import com.atguigu.gulimall.ware.dao.WareSkuDao;
 import com.atguigu.gulimall.ware.entity.WareSkuEntity;
 import com.atguigu.gulimall.ware.service.WareSkuService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Service("wareSkuService")
@@ -29,6 +37,59 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
 
     @Autowired
     private ProductFeignService productFeignService;
+
+    /**
+     * 锁定库存 (所有订单项都锁定成功才算锁定成功，只要有一个订单项锁定失败那就是锁定失败)
+     */
+    @Transactional
+    @Override
+    public Boolean orderLockStock(WareSkuLockVo lockVo) {
+        // 给 每一个订单项 都封装一个 SkuWareHasStock对象 (查询 每件商品在哪些仓库中有库存)
+        List<OrderItemVo> locks = lockVo.getLocks();
+        List<SkuWareHasStock> collect = locks.stream().map(item -> {
+            SkuWareHasStock stock = new SkuWareHasStock();
+            Long skuId = item.getSkuId();
+            stock.setSkuId(skuId);
+            stock.setNum(item.getCount());
+            // 根据 skuId 查询 该商品在哪些仓库中有库存
+            List<Long> wareIds = baseMapper.listWareIdHasSkuStock(skuId);
+            stock.setWareId(wareIds);
+            return stock;
+        }).collect(Collectors.toList());
+
+        // 锁定库存
+        // 标识 是否所有订单项都可以锁定成功
+        Boolean allLock = true;
+        for (SkuWareHasStock hasStock : collect) {
+            Boolean skuStocked = false;
+            Long skuId = hasStock.getSkuId();
+            List<Long> wareIds = hasStock.getWareId();
+            if (wareIds == null || wareIds.size() == 0) {
+                // 没有任何仓库有当前商品
+                throw new NoStockException(skuId);
+            }
+            for (Long wareId : wareIds) {
+                // 锁定库存 (根据 商品id、库存id、需要锁定的商品件数 锁定库存)
+                //   锁定成功 : 返回1
+                //   锁定失败 : 返回0
+                Long count = baseMapper.lockSkuStock(skuId, wareId, hasStock.getNum());
+                if (count == 1) {
+                    // 当前商品 锁定成功
+                    skuStocked = true;
+                    break;
+                } else {
+                    // 当前仓库 锁定 当前商品 失败
+                    // 如果还有下一个仓库，尝试使用下一个仓库 锁定 当前商品
+                }
+            }
+            if (!skuStocked) {
+                // 所有仓库 锁定 当前商品 失败 -> 当前商品锁定失败 -> 全局锁定失败 -> 抛出 NoStockException异常
+                throw new NoStockException(skuId);
+            }
+        }
+        // 全部商品锁定成功
+        return true;
+    }
 
     // 查询sku是否有库存
     @Override
@@ -98,5 +159,15 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         IPage<WareSkuEntity> page = this.page(new Query<WareSkuEntity>().getPage(params), queryWrapper);
 
         return new PageUtils(page);
+    }
+
+    @Data
+    class SkuWareHasStock {
+        // 商品id
+        private Long skuId;
+        // 需要锁定的商品件数
+        private Integer num;
+        // 拥有该商品的仓库集合 (该商品在哪些仓库中有库存)
+        private List<Long> wareId;
     }
 }

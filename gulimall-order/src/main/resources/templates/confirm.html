@@ -301,7 +301,7 @@
 </div>
 
 <!--主体部分-->
-<p class="p1">填写并核对订单信息</p>
+<p class="p1">填写并核对订单信息 <span style="color:red;" th:if="${msg != null}" th:text="${msg}"></span></p>
 <div class="section">
     <!--收货人信息-->
     <div class="top-2">
@@ -310,8 +310,9 @@
     </div>
 
     <!--地址-->
-    <div class="top-3" th:each="addr : ${data.address}">
-        <p>[[${addr.name}]]</p><span>[[${addr.name}]] [[${addr.province}]] [[${addr.detailAddress}]] [[${addr.phone}]]</span>
+    <div class="top-3 addr-item" th:each="addr : ${data.address}">
+        <p th:attr="def = ${addr.defaultStatus}, addrId = ${addr.id}" style="cursor: pointer">[[${addr.name}]]</p>
+        <span>[[${addr.name}]] [[${addr.province}]] [[${addr.detailAddress}]] [[${addr.phone}]]</span>
     </div>
     <p class="p2">更多地址︾</p>
     <div class="hh1"/>
@@ -424,7 +425,7 @@
         </p>
         <p class="qian_y">
             <span>运费： </span>
-            <span class="rmb"> &nbsp ￥0.00</span>
+            <span class="rmb"> &nbsp ￥<b id="fareEle"></b></span>
         </p>
         <p class="qian_y">
             <span>服务费： </span>
@@ -436,10 +437,19 @@
         </p>
     </div>
     <div class="yfze">
-        <p class="yfze_a"><span class="z">应付总额：</span><span class="hq">￥[[${#numbers.formatDecimal(data.payPrice,1,2)}]]</span></p>
+        <p class="yfze_a">
+            <span class="z">应付总额：</span>
+            <span class="hq">￥<b id="payPriceEle">[[${#numbers.formatDecimal(data.payPrice,1,2)}]]</b></span>
+        </p>
         <p class="yfze_b">寄送至：<span id="receiveAddressEle"></span> 收货人：<span id="receiverEle"></span></p>
     </div>
-    <button class="tijiao">提交订单</button>
+    <form action="http://order.gulimall.com/submitOrder" method="post">
+        <input id="addrIdInput" type="hidden" name="addrId">
+        <input id="payPriceInput" type="hidden" name="payPrice">
+        <!-- 防重令牌 -->
+        <input type="hidden" name="orderToken" th:value="${data.orderToken}">
+        <button class="tijiao" type="submit">提交订单</button>
+    </form>
 </div>
 </div>
 
@@ -671,8 +681,52 @@
             $('.h-r-1').css('display', 'block')
         }, function () {
             $('.h-r-1').css('display', 'none')
-        })
-    })
+        });
+
+        // 收货地址高亮
+        highlight();
+
+        // 获取运费
+        var defAddrId = $(".addr-item p[def='1']").attr("addrId");
+        getFare(defAddrId);
+    });
+
+    // 收货地址高亮
+    function highlight() {
+        $(".addr-item p").css({"border": "2px solid gray"});
+        $(".addr-item p[def='1']").css({"border": "2px solid red"});
+    }
+
+    // 选择收货地址
+    $(".addr-item p").click(function () {
+        $(".addr-item p").attr("def", "0");
+        $(this).attr("def", "1");
+        highlight();
+
+        // 获取运费
+        var addrId = $(this).attr("addrId");
+        getFare(addrId);
+    });
+
+    // 获取运费
+    function getFare(addrId) {
+        // 表单回填 用户选择的收货地址
+        $("#addrIdInput").val(addrId);
+        // 根据 收货地址 计算 运费
+        $.get("http://gulimall.com/api/ware/wareinfo/fare?addrId=" + addrId, function(res) {
+            // 设置运费
+            $("#fareEle").text(res.data.fare);
+            // 设置应付总额
+            var total = [[${data.total}]];
+            var payPrice = total * 1 + res.data.fare * 1;
+            $("#payPriceEle").text(payPrice);
+            $("#payPriceInput").val(payPrice);
+            // 设置收货地址
+            $("#receiveAddressEle").text(res.data.address.province + " " + res.data.address.detailAddress);
+            // 设置收货人
+            $("#receiverEle").text(res.data.address.name);
+        });
+    }
 </script>
 </body>
 </html>

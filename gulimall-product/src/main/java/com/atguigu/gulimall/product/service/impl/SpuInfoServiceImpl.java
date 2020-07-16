@@ -72,6 +72,15 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     @Resource
     private SearchFeignService searchFeignService;
 
+    // 根据 skuId 查询 spu信息
+    @Override
+    public SpuInfoEntity getSpuInfoBySkuId(Long skuId) {
+        SkuInfoEntity skuInfoEntity = skuInfoService.getById(skuId);
+        Long spuId = skuInfoEntity.getSpuId();
+        SpuInfoEntity spuInfoEntity = getById(spuId);
+        return spuInfoEntity;
+    }
+
     // 商品上架
     @Override
     public void up(Long spuId) {

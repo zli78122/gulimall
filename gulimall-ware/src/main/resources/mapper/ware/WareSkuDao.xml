@@ -23,4 +23,17 @@
         SELECT SUM(stock - stock_locked) FROM `wms_ware_sku` WHERE sku_id=#{skuId}
     </select>
 
+    <!-- 根据 skuId 查询 该商品在哪些仓库中有库存 -->
+    <select id="listWareIdHasSkuStock" resultType="java.lang.Long">
+        SELECT ware_id FROM wms_ware_sku
+        WHERE sku_id=#{skuId} AND stock - stock_locked > 0
+    </select>
+
+    <!-- 锁定库存 (根据 商品id、库存id、需要锁定的商品件数 锁定库存) -->
+    <update id="lockSkuStock">
+        UPDATE wms_ware_sku
+        SET stock_locked = stock_locked + #{num}
+        WHERE sku_id = #{skuId} AND ware_id = #{wareId} AND stock - stock_locked >= #{num}
+    </update>
+
 </mapper>

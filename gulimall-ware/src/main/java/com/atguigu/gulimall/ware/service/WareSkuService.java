@@ -1,6 +1,7 @@
 package com.atguigu.gulimall.ware.service;
 
 import com.atguigu.gulimall.ware.vo.SkuHasStockVo;
+import com.atguigu.gulimall.ware.vo.WareSkuLockVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.common.utils.PageUtils;
 import com.atguigu.gulimall.ware.entity.WareSkuEntity;
@@ -25,4 +26,7 @@ public interface WareSkuService extends IService<WareSkuEntity> {
 
     // 查询sku是否有库存
     List<SkuHasStockVo> getSkuHasStock(List<Long> skuIds);
+
+    // 锁定库存 (所有订单项都锁定成功才算锁定成功，只要有一个订单项锁定失败那就是锁定失败)
+    Boolean orderLockStock(WareSkuLockVo lockVo);
 }
