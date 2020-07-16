@@ -6,6 +6,8 @@ import java.util.List;
 
 @Data
 public class MergeVo {
-    private Long purchaseId; //整单id
-    private List<Long> items;//[1,2,3,4] //合并项集合
+    // 采购单id
+    private Long purchaseId;
+    // 采购项id 集合
+    private List<Long> items;
 }
