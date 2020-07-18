@@ -24,7 +24,7 @@ public class OrderCloseListener {
      */
     @RabbitHandler
     public void listener(OrderEntity orderEntity, Channel channel, Message message) throws IOException {
-        System.out.println("订单号[" + orderEntity.getOrderSn() + "] " + "订单创建已满1分钟，判断订单状态是否为 '待付款'，如果是，就取消订单");
+        System.out.println("订单号[" + orderEntity.getOrderSn() + "]: " + "订单创建已满1分钟，判断订单状态是否为 '待付款'，如果是，就取消订单。");
         try {
             // 判断订单状态是否为 "待付款"，如果是，就取消订单
             orderService.closeOrder(orderEntity);

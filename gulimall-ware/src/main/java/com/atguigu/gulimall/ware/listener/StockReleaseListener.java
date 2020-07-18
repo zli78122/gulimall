@@ -25,8 +25,8 @@ public class StockReleaseListener {
      */
     @RabbitHandler
     public void handleStockLockedRelease(StockLockedTo stockLockedTo, Message message, Channel channel) throws IOException {
-        System.out.println("库存工作单详情id : " + stockLockedTo.getDetailTo().getId() + ", " +
-                "库存锁定已满2分钟，执行'解锁库存'的业务逻辑");
+        System.out.println("库存工作单详情id = " + stockLockedTo.getDetailTo().getId() + "。" +
+                "库存锁定已满2分钟，执行'解锁库存'的业务逻辑。");
 
         try {
             // 根据 StockLockedTo对象 解锁库存
@@ -45,7 +45,7 @@ public class StockReleaseListener {
      */
     @RabbitHandler
     public void handleOrderCloseRelease(OrderTo orderTo, Message message, Channel channel) throws IOException {
-        System.out.println("订单号[" + orderTo.getOrderSn() + "] " + "订单已取消，执行'解锁库存'的业务逻辑");
+        System.out.println("订单号[" + orderTo.getOrderSn() + "]: " + "订单已取消，执行'解锁库存'的业务逻辑。");
         try {
             // 根据 OrderTo对象 解锁库存
             wareSkuService.unlockStock(orderTo);
