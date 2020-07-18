@@ -26,4 +26,10 @@ public interface OrderService extends IService<OrderEntity> {
 
     // 提交订单 (下单)
     SubmitOrderResponseVo submitOrder(OrderSubmitVo vo);
+
+    // 根据 订单号 查询 订单信息
+    OrderEntity getOrderByOrderSn(String orderSn);
+
+    // 判断订单状态是否为 "待付款"，如果是，就取消订单
+    void closeOrder(OrderEntity entity);
 }

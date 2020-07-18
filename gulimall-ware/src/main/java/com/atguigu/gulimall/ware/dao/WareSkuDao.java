@@ -26,6 +26,9 @@ public interface WareSkuDao extends BaseMapper<WareSkuEntity> {
     // 根据 skuId 查询 该商品在哪些仓库中有库存
     List<Long> listWareIdHasSkuStock(@Param("skuId") Long skuId);
 
-    // 锁定库存 (根据 商品id、库存id、需要锁定的商品件数 锁定库存)
+    // 锁定库存 (根据 商品id、仓库id、需要锁定的商品件数 锁定库存)
     Long lockSkuStock(@Param("skuId") Long skuId, @Param("wareId") Long wareId, @Param("num") Integer num);
+
+    // 解锁库存 (根据 商品id、仓库id、需要解锁的商品件数 解锁库存)
+    void unLockStock(@Param("skuId") Long skuId, @Param("wareId") Long wareId, @Param("num") Integer num);
 }

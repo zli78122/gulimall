@@ -18,6 +18,10 @@ spring:
     virtual-host: /
     username: guest
     password: guest
+    # 开启手动 Ack 模式
+    listener:
+      simple:
+        acknowledge-mode: manual
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml

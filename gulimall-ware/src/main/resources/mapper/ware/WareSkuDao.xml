@@ -29,11 +29,18 @@
         WHERE sku_id=#{skuId} AND stock - stock_locked > 0
     </select>
 
-    <!-- 锁定库存 (根据 商品id、库存id、需要锁定的商品件数 锁定库存) -->
+    <!-- 锁定库存 (根据 商品id、仓库id、需要锁定的商品件数 锁定库存) -->
     <update id="lockSkuStock">
         UPDATE wms_ware_sku
         SET stock_locked = stock_locked + #{num}
         WHERE sku_id = #{skuId} AND ware_id = #{wareId} AND stock - stock_locked >= #{num}
+    </update>
+
+    <!-- 解锁库存 (根据 商品id、仓库id、需要解锁的商品件数 解锁库存) -->
+    <update id="unLockStock">
+        UPDATE wms_ware_sku
+        SET stock_locked = stock_locked - #{num}
+        WHERE sku_id = #{skuId} AND ware_id = #{wareId}
     </update>
 
 </mapper>

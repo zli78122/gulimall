@@ -3,6 +3,7 @@ package com.atguigu.gulimall.order.interceptor;
 import com.atguigu.common.constant.AuthServerConstant;
 import com.atguigu.common.vo.MemberResponseVO;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,20 @@ public class LoginUserInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+        String uri = request.getRequestURI();
+        AntPathMatcher antPathMatcher = new AntPathMatcher();
+        // 放行请求 : 根据 订单号 查询 订单信息
+        boolean statusMatch = antPathMatcher.match("/order/order/status/**", uri);
+        // 放行请求 : 支付宝异步回调
+        boolean payedMatch = antPathMatcher.match("/payed/notify", uri);
+        // 放行请求 : 支付宝查询支付状态
+        boolean queryPayMatch = antPathMatcher.match("/queryPayStatus", uri);
+
+        if (statusMatch || payedMatch || queryPayMatch) {
+            // 放行
+            return true;
+        }
+
         MemberResponseVO loginMember = (MemberResponseVO) request.getSession().getAttribute(AuthServerConstant.LOGIN_USER);
         if (loginMember != null) {
             // 用户已登录 -> 放行

@@ -1,7 +1,9 @@
 package com.atguigu.gulimall.ware.service.impl;
 
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -12,9 +14,17 @@ import com.atguigu.gulimall.ware.dao.WareOrderTaskDao;
 import com.atguigu.gulimall.ware.entity.WareOrderTaskEntity;
 import com.atguigu.gulimall.ware.service.WareOrderTaskService;
 
-
 @Service("wareOrderTaskService")
 public class WareOrderTaskServiceImpl extends ServiceImpl<WareOrderTaskDao, WareOrderTaskEntity> implements WareOrderTaskService {
+
+    // 根据 订单号 查询 库存工作单
+    @Override
+    public WareOrderTaskEntity getOrderTaskByOrderSn(String orderSn) {
+        QueryWrapper<WareOrderTaskEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("order_sn", orderSn);
+        WareOrderTaskEntity wareOrderTaskEntity = this.getOne(wrapper);
+        return wareOrderTaskEntity;
+    }
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -25,5 +35,4 @@ public class WareOrderTaskServiceImpl extends ServiceImpl<WareOrderTaskDao, Ware
 
         return new PageUtils(page);
     }
-
 }

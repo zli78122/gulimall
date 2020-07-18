@@ -78,4 +78,21 @@ public class MyMQConfig {
                 null);
         return binding;
     }
+
+    // 创建 绑定 (Binding) - 基于路由键 将 交换器 和 消息队列 连接起来
+    @Bean
+    public Binding orderReleaseOtherBinding() {
+        // 绑定 - 基于路由键 将 交换器 和 消息队列 连接起来
+        // 第一个参数 : destination (目的地)
+        // 第二个参数 : destinationType (目的地类型)
+        // 第三个参数 : exchange (交换器)
+        // 第四个参数 : routingKey (路由键)
+        // 第五个参数 : arguments (参数)
+        Binding binding = new Binding("stock.release.stock.queue",
+                Binding.DestinationType.QUEUE,
+                "order-event-exchange",
+                "order.release.other.#",
+                null);
+        return binding;
+    }
 }

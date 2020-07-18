@@ -2,6 +2,7 @@ package com.atguigu.gulimall.order.service.impl;
 
 import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.exception.NoStockException;
+import com.atguigu.common.to.mq.OrderTo;
 import com.atguigu.common.utils.R;
 import com.atguigu.common.vo.MemberResponseVO;
 import com.atguigu.gulimall.order.constant.OrderConstant;
@@ -17,6 +18,9 @@ import com.atguigu.gulimall.order.to.OrderCreateTo;
 import com.atguigu.gulimall.order.vo.*;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import io.seata.spring.annotation.GlobalTransactional;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -72,8 +76,57 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     @Autowired
     private OrderItemService orderItemService;
 
-    // 提交订单 (下单)
-    @GlobalTransactional
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    // 判断订单状态是否为 "待付款"，如果是，就取消订单
+    @Override
+    public void closeOrder(OrderEntity entity) {
+        // 查询订单的最新状态
+        //   如果订单的最新状态为 "待付款"，那说明 用户在订单生成后的一段时间内都没有付款
+        //   在实际生产环境下，"这段时间" 通常为 15min - 30min，我们的系统为了方便测试，将 "这段时间" 设置为 1min
+        //   如果订单状态为 "待付款"，那系统认为 用户已经放弃此次交易
+        //   接下来系统要做的就是 将订单状态修改为 "已取消"，然后 解锁库存
+        OrderEntity orderEntity = this.getById(entity.getId());
+        // 订单的最新状态为 "待付款"
+        if (orderEntity.getStatus().equals(OrderStatusEnum.CREATE_NEW.getCode())) {
+            // 将订单状态修改为 "已取消"
+            OrderEntity update = new OrderEntity();
+            update.setId(orderEntity.getId());
+            update.setStatus(OrderStatusEnum.CANCELLED.getCode());
+            this.updateById(update);
+
+            // 给 RabbitMQ 发送消息，解锁库存
+            OrderTo orderTo = new OrderTo();
+            BeanUtils.copyProperties(orderEntity, orderTo);
+            try {
+                // 发送消息
+                // "order-event-exchange"交换机 会将消息派送到 "stock.release.stock.queue"队列
+                // "stock.release.stock.queue" 的消费者在获取消息之后，会执行"解锁库存"的业务逻辑
+                rabbitTemplate.convertAndSend("order-event-exchange", "order.release.other", orderTo);
+            } catch (AmqpException e) {
+                // 如果此时捕获到了异常，那一定是由于网络原因所导致的消息没有发送成功 -> 将没有发送成功的消息重新进行发送
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // 根据 订单号 查询 订单信息
+    @Override
+    public OrderEntity getOrderByOrderSn(String orderSn) {
+        QueryWrapper<OrderEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("order_sn", orderSn);
+        OrderEntity orderEntity = this.getOne(wrapper);
+        return orderEntity;
+    }
+
+    /**
+     * 提交订单 (下单)
+     *
+     * 高并发场景下 (e.g. 生成订单)，不适合使用 Seata 解决分布式事务
+     * 高并发场景下，我们应该使用 "柔性事务 - 可靠消息 + 最终一致性方案 (异步确保型)" 方案 解决分布式事务
+     */
+    // @GlobalTransactional
     @Transactional
     @Override
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo orderSubmitVo) {
@@ -151,6 +204,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 if (r.getCode() == 0) {
                     // 库存锁定 成功
                     response.setOrder(order.getOrder());
+
+                    // 模拟业务出现异常
+                    // int num = 10 / 0;
+
+                    // 发送延时消息
+                    // "order-event-exchange"交换机 会将消息派送到 "order.delay.queue"队列
+                    // "order.delay.queue"队列 为一个 延时队列，也叫 死信队列 ("order.delay.queue"队列 没有消费者)
+                    // 1分钟后，延时队列 会将消息转发到 "order.release.order.queue"队列
+                    // "order.release.order.queue" 的消费者在获取消息之后，会判断订单状态是否为 "待付款"，如果是，就取消订单
+                    rabbitTemplate.convertAndSend("order-event-exchange", "order.create.order", order.getOrder());
+
                     return response;
                 } else {
                     // 库存锁定 失败
