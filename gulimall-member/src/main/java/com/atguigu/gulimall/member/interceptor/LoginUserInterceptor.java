@@ -1,4 +1,4 @@
-package com.atguigu.gulimall.order.interceptor;
+package com.atguigu.gulimall.member.interceptor;
 
 import com.atguigu.common.constant.AuthServerConstant;
 import com.atguigu.common.vo.MemberResponseVO;
@@ -27,14 +27,10 @@ public class LoginUserInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         String uri = request.getRequestURI();
         AntPathMatcher antPathMatcher = new AntPathMatcher();
-        // 放行请求 : 根据 订单号 查询 订单信息
-        boolean statusMatch = antPathMatcher.match("/order/order/status/**", uri);
-        // 放行请求 : 支付成功后 支付宝异步回调
-        boolean payedMatch = antPathMatcher.match("/payed/notify", uri);
-        // 放行请求 : 查询支付宝支付状态
-        boolean queryPayMatch = antPathMatcher.match("/queryPayStatus", uri);
 
-        if (statusMatch || payedMatch || queryPayMatch) {
+        // 放行请求 : "/member/**"
+        boolean match = antPathMatcher.match("/member/**", uri);
+        if (match) {
             // 放行
             return true;
         }

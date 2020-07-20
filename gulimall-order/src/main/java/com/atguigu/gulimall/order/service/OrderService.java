@@ -1,8 +1,6 @@
 package com.atguigu.gulimall.order.service;
 
-import com.atguigu.gulimall.order.vo.OrderConfirmVo;
-import com.atguigu.gulimall.order.vo.OrderSubmitVo;
-import com.atguigu.gulimall.order.vo.SubmitOrderResponseVo;
+import com.atguigu.gulimall.order.vo.*;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.common.utils.PageUtils;
 import com.atguigu.gulimall.order.entity.OrderEntity;
@@ -32,4 +30,13 @@ public interface OrderService extends IService<OrderEntity> {
 
     // 判断订单状态是否为 "待付款"，如果是，就取消订单
     void closeOrder(OrderEntity entity);
+
+    // 根据 订单号 获取 PayVo对象
+    PayVo getOrderPay(String orderSn);
+
+    // 分页查询当前登录用户的所有订单信息
+    PageUtils queryPageWithItem(Map<String, Object> params);
+
+    // 支付完成 -> 保存支付信息 & 修改订单状态
+    String handPayResult(PayAsyncVo vo);
 }

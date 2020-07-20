@@ -7,6 +7,7 @@ import com.atguigu.common.utils.R;
 import com.atguigu.common.vo.MemberResponseVO;
 import com.atguigu.gulimall.order.constant.OrderConstant;
 import com.atguigu.gulimall.order.entity.OrderItemEntity;
+import com.atguigu.gulimall.order.entity.PaymentInfoEntity;
 import com.atguigu.gulimall.order.enume.OrderStatusEnum;
 import com.atguigu.gulimall.order.feign.CartFeignService;
 import com.atguigu.gulimall.order.feign.MemberFeignService;
@@ -14,6 +15,7 @@ import com.atguigu.gulimall.order.feign.ProductFeignService;
 import com.atguigu.gulimall.order.feign.WareFeignService;
 import com.atguigu.gulimall.order.interceptor.LoginUserInterceptor;
 import com.atguigu.gulimall.order.service.OrderItemService;
+import com.atguigu.gulimall.order.service.PaymentInfoService;
 import com.atguigu.gulimall.order.to.OrderCreateTo;
 import com.atguigu.gulimall.order.vo.*;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -77,7 +79,80 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private OrderItemService orderItemService;
 
     @Autowired
+    private PaymentInfoService paymentInfoService;
+
+    @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    // 支付完成 -> 保存支付信息 & 修改订单状态
+    @Override
+    public String handPayResult(PayAsyncVo payAsyncVo) {
+        // 保存支付信息 - 对应 oms_payment_info 数据库表
+        PaymentInfoEntity paymentInfoEntity = new PaymentInfoEntity();
+        paymentInfoEntity.setAlipayTradeNo(payAsyncVo.getTrade_no());
+        paymentInfoEntity.setOrderSn(payAsyncVo.getOut_trade_no());
+        paymentInfoEntity.setPaymentStatus(payAsyncVo.getTrade_status());
+        paymentInfoEntity.setCallbackTime(payAsyncVo.getNotify_time());
+        paymentInfoService.save(paymentInfoEntity);
+
+        // 修改订单状态
+        if (payAsyncVo.getTrade_status().equals("TRADE_SUCCESS") || payAsyncVo.getTrade_status().equals("TRADE_FINISHED")) {
+            // 订单号
+            String outTradeNo = payAsyncVo.getOut_trade_no();
+            // 修改订单状态
+            baseMapper.updateOrderStatus(outTradeNo, OrderStatusEnum.PAYED.getCode());
+        }
+
+        return "success";
+    }
+
+    // 分页查询当前登录用户的所有订单信息
+    @Override
+    public PageUtils queryPageWithItem(Map<String, Object> params) {
+        // 从 ThreadLocal 中获取 memberResponseVO
+        MemberResponseVO memberResponseVO = LoginUserInterceptor.loginUser.get();
+        // 分页查询
+        IPage<OrderEntity> page = this.page(
+                new Query<OrderEntity>().getPage(params),
+                new QueryWrapper<OrderEntity>().eq("member_id", memberResponseVO.getId()).orderByDesc("id")
+        );
+        // 遍历 分页查询出来的所有订单信息
+        List<OrderEntity> collect = page.getRecords().stream().map(order -> {
+            // 查询 当前订单的所有订单项
+            QueryWrapper<OrderItemEntity> wrapper = new QueryWrapper<>();
+            wrapper.eq("order_sn", order.getOrderSn());
+            List<OrderItemEntity> itemEntities = orderItemService.list(wrapper);
+            // 设置 当前订单对象 的 订单项
+            order.setOrderItems(itemEntities);
+            return order;
+        }).collect(Collectors.toList());
+        page.setRecords(collect);
+        return new PageUtils(page);
+    }
+
+    // 根据 订单号 获取 PayVo对象
+    @Override
+    public PayVo getOrderPay(String orderSn) {
+        PayVo payVo = new PayVo();
+        // 根据 订单号 查询 订单信息
+        OrderEntity order = this.getOrderByOrderSn(orderSn);
+        // 订单金额 (保留2位小数 向上取值)
+        BigDecimal orderPrice = order.getPayAmount().setScale(2, BigDecimal.ROUND_UP);
+        // 设置 订单金额
+        payVo.setTotal_amount(orderPrice.toString());
+        // 设置 订单号
+        payVo.setOut_trade_no(orderSn);
+        // 根据 订单号 查询 订单项信息
+        QueryWrapper<OrderItemEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("order_sn", orderSn);
+        List<OrderItemEntity> list = orderItemService.list(wrapper);
+        OrderItemEntity itemEntity = list.get(0);
+        // 设置 订单标题
+        payVo.setSubject(itemEntity.getSkuName());
+        // 设置 商品描述
+        payVo.setBody(itemEntity.getSkuAttrsVals());
+        return payVo;
+    }
 
     // 判断订单状态是否为 "待付款"，如果是，就取消订单
     @Override
@@ -122,7 +197,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     /**
      * 提交订单 (下单)
-     *
+     * <p>
      * 高并发场景下 (e.g. 生成订单)，不适合使用 Seata 解决分布式事务
      * 高并发场景下，我们应该使用 "柔性事务 - 可靠消息 + 最终一致性方案 (异步确保型)" 方案 解决分布式事务
      */

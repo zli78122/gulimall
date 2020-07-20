@@ -10,6 +10,14 @@ spring:
         server-addr: 127.0.0.1:8848
   application:
     name: gulimall-member
+  thymeleaf:
+    cache: false
+  redis:
+    host: 192.168.56.200
+    port: 6379
+  session:
+    # Spring Session 存储类型 : redis
+    store-type: redis
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml

@@ -35,6 +35,8 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
+  mvc:
+    date-format: yyyy-MM-dd HH:mm:ss
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
