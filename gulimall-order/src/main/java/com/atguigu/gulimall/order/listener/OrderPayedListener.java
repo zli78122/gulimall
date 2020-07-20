@@ -23,7 +23,7 @@ import java.util.Map;
 public class OrderPayedListener {
 
     @Autowired
-    AlipayTemplate alipayTemplate;
+    private AlipayTemplate alipayTemplate;
 
     @Autowired
     private OrderService orderService;
