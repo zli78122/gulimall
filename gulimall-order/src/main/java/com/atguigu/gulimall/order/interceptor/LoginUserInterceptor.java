@@ -29,7 +29,7 @@ public class LoginUserInterceptor implements HandlerInterceptor {
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         // 放行请求 : 根据 订单号 查询 订单信息
         boolean statusMatch = antPathMatcher.match("/order/order/status/**", uri);
-        // 放行请求 : 支付成功后 支付宝异步回调
+        // 放行请求 : 支付完成后 支付宝异步回调
         boolean payedMatch = antPathMatcher.match("/payed/notify", uri);
         // 放行请求 : 查询支付宝支付状态
         boolean queryPayMatch = antPathMatcher.match("/queryPayStatus", uri);

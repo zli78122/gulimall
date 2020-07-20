@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * 支付宝异步回调通知
+ * 支付完成后 支付宝异步回调
  */
 @RestController
 public class OrderPayedListener {
@@ -29,7 +29,7 @@ public class OrderPayedListener {
     private OrderService orderService;
 
     /**
-     * 支付成功后 支付宝异步回调
+     * 支付完成后 支付宝异步回调
      */
     @PostMapping("/payed/notify")
     public String handAlipayAsyncNotify(PayAsyncVo payAsyncVo, HttpServletRequest request) throws AlipayApiException, UnsupportedEncodingException {
