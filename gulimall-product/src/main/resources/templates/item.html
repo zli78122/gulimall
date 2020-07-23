@@ -495,10 +495,15 @@
                         <li>京东价</li>
                         <li>
                             <span>￥</span>
-                            <span th:text="${#numbers.formatDecimal(item.info.price,3,2)}">4499.00</span>
+                            <span th:if="${item.seckillInfo == null}" th:text="${#numbers.formatDecimal(item.info.price,3,2)}">4499.00</span>
+                            <span th:if="${item.seckillInfo != null}"
+                                  th:text="${#numbers.formatDecimal(item.info.price,3,2)}"
+                                  style="text-decoration: line-through; font-size: 16px">4499.00</span>
                         </li>
-                        <li style="color: red">
-                            预约享资格
+                        <li th:if="${item.seckillInfo != null}">
+                            <span style="font-size: 16px; font-family: simsun; color: red">秒杀价</span>
+                            <span style="color: red">￥</span>
+                            <span style="color: red; font-size: 25px">[[${#numbers.formatDecimal(item.seckillInfo.seckillPrice,1,2)}]]</span>
                         </li>
                         <li>
                             <a href="/static/item/">
@@ -613,9 +618,15 @@
 
                         </div>
                     </div>
-                    <div class="box-btns-two">
+                    <div class="box-btns-two" th:if="${item.seckillInfo == null}">
                         <a href="javascript: void(0)" id="addToCartA" th:attr="skuId = ${item.info.skuId}">
                             加入购物车
+                        </a>
+                    </div>
+                    <div class="box-btns-two" th:if="${item.seckillInfo != null}">
+                        <a href="javascript: void(0)" id="secKillA"
+                           th:attr="skuId = ${item.info.skuId}, seckill_session_id = ${item.seckillInfo.promotionSessionId}, code = ${item.seckillInfo.randomCode}">
+                            立即抢购
                         </a>
                     </div>
                     <div class="box-btns-three">
@@ -1247,10 +1258,29 @@
     })
 </script>
 <script type="text/javascript">
+    // 点击 "加入购物车" 按钮
     $("#addToCartA").click(function () {
         var num = $("#numInput").val();
         var skuId = $(this).attr("skuId");
         location.href = "http://cart.gulimall.com/addToCart?skuId=" + skuId + "&num=" + num;
+        return false;
+    });
+
+    // 点击 "立即抢购" 按钮 (参与秒杀活动)
+    $("#secKillA").click(function () {
+        // 判断用户是否登录 (前端限流)
+        var isLogin = [[${session.loginUser != null}]];
+        if (isLogin) {
+            // 秒杀Id = sessionId_skuId
+            var killId = $(this).attr("seckill_session_id") + "_" + $(this).attr("skuId");
+            // 秒杀随机码
+            var key = $(this).attr("code");
+            // 购买商品数量
+            var num = $("#numInput").val();
+            location.href = "http://seckill.gulimall.com/secKill?killId=" + killId + "&key=" + key + "&num=" + num;
+        } else {
+            alert("秒杀请先登录");
+        }
         return false;
     });
 </script>

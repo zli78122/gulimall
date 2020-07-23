@@ -3,6 +3,7 @@ package com.atguigu.gulimall.order.service.impl;
 import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.exception.NoStockException;
 import com.atguigu.common.to.mq.OrderTo;
+import com.atguigu.common.to.mq.SecKillOrderTo;
 import com.atguigu.common.utils.R;
 import com.atguigu.common.vo.MemberResponseVO;
 import com.atguigu.gulimall.order.constant.OrderConstant;
@@ -83,6 +84,37 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    // 创建 秒杀订单
+    @Override
+    public void createSecKillOrder(SecKillOrderTo secKillOrderTo) {
+        // 根据 skuId 查询 spu信息
+        R spuInfoR = productFeignService.getSpuInfoBySkuId(secKillOrderTo.getSkuId());
+        SpuInfoVo spuInfoVo = spuInfoR.getData(new TypeReference<SpuInfoVo>() {
+        });
+
+        // 保存订单信息
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setOrderSn(secKillOrderTo.getOrderSn());
+        orderEntity.setMemberId(secKillOrderTo.getMemberId());
+        orderEntity.setStatus(OrderStatusEnum.CREATE_NEW.getCode());
+        BigDecimal orderPrice = secKillOrderTo.getSeckillPrice().multiply(new BigDecimal("" + secKillOrderTo.getNum()));
+        orderEntity.setPayAmount(orderPrice);
+        orderEntity.setModifyTime(new Date());
+        this.save(orderEntity);
+
+        // 保存订单项信息
+        OrderItemEntity orderItemEntity = new OrderItemEntity();
+        orderItemEntity.setOrderSn(secKillOrderTo.getOrderSn());
+        orderItemEntity.setRealAmount(orderPrice);
+        orderItemEntity.setSkuQuantity(secKillOrderTo.getNum());
+        orderItemEntity.setSpuId(spuInfoVo.getId());
+        orderItemEntity.setSpuName(spuInfoVo.getSpuName());
+        orderItemEntity.setSpuBrand(spuInfoVo.getBrandId() + "");
+        orderItemEntity.setCategoryId(spuInfoVo.getCatalogId());
+        orderItemEntity.setSkuId(secKillOrderTo.getSkuId());
+        orderItemService.save(orderItemEntity);
+    }
 
     // 支付完成 -> 保存支付信息 & 修改订单状态
     @Override

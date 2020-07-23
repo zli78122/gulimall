@@ -27,4 +27,7 @@ public class SkuItemVo {
 
     // 是否有货
     Boolean hasStock = true;
+
+    // 商品秒杀信息
+    SecKillInfoVo seckillInfo;
 }

@@ -1,8 +1,12 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import com.alibaba.fastjson.TypeReference;
+import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.product.entity.SkuImagesEntity;
 import com.atguigu.gulimall.product.entity.SpuInfoDescEntity;
+import com.atguigu.gulimall.product.feign.SecKillFeignService;
 import com.atguigu.gulimall.product.service.*;
+import com.atguigu.gulimall.product.vo.SecKillInfoVo;
 import com.atguigu.gulimall.product.vo.SkuItemSaleAttrVo;
 import com.atguigu.gulimall.product.vo.SkuItemVo;
 import com.atguigu.gulimall.product.vo.SpuItemAttrGroupVo;
@@ -45,6 +49,9 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
     @Autowired
     private ThreadPoolExecutor executor;
 
+    @Autowired
+    private SecKillFeignService secKillFeignService;
+
     // 根据 skuId 获取 商品详情信息
     @Override
     public SkuItemVo item(Long skuId) throws ExecutionException, InterruptedException {
@@ -81,8 +88,22 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
             skuItemVo.setGroupAttrs(groupVos);
         }, executor);
 
+        // 6.开启异步任务 获取商品秒杀信息
+        CompletableFuture<Void> secKillFuture = CompletableFuture.runAsync(() -> {
+            // 调用远程微服务 : 根据 skuId 获取 商品秒杀信息
+            R secKillInfoVoR = secKillFeignService.getSkuSecKillInfo(skuId);
+            if (secKillInfoVoR.getCode() == 0) {
+                // 远程调用成功
+                // 从 secKillInfoVoR 中获取 secKillInfoVo
+                SecKillInfoVo secKillInfoVo = secKillInfoVoR.getData(new TypeReference<SecKillInfoVo>() {
+                });
+                // 设置 商品秒杀信息
+                skuItemVo.setSeckillInfo(secKillInfoVo);
+            }
+        }, executor);
+
         // 等待所有异步任务完成
-        CompletableFuture.allOf(infoFuture, saleAttrFuture, descFuture, baseAttrFuture, imageFuture).get();
+        CompletableFuture.allOf(infoFuture, saleAttrFuture, descFuture, baseAttrFuture, imageFuture, secKillFuture).get();
 
         return skuItemVo;
     }

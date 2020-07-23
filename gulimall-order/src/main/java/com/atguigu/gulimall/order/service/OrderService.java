@@ -1,5 +1,6 @@
 package com.atguigu.gulimall.order.service;
 
+import com.atguigu.common.to.mq.SecKillOrderTo;
 import com.atguigu.gulimall.order.vo.*;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.atguigu.common.utils.PageUtils;
@@ -39,4 +40,7 @@ public interface OrderService extends IService<OrderEntity> {
 
     // 支付完成 -> 保存支付信息 & 修改订单状态
     String handPayResult(PayAsyncVo vo);
+
+    // 创建 秒杀订单
+    void createSecKillOrder(SecKillOrderTo secKillOrderTo);
 }
