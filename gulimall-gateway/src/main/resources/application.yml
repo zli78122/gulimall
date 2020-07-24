@@ -1,17 +1,9 @@
 spring:
-  application:
-    name: gulimall-third-party
   cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
     sentinel:
       transport:
         port: 8719
         dashboard: localhost:8333
-
-server:
-  port: 30000
 
 management:
   endpoints:
