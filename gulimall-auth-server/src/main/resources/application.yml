@@ -15,14 +15,22 @@ spring:
     host: 192.168.56.200
     port: 6379
   session:
-    # Spring Session \u5B58\u50A8\u7C7B\u578B : redis
+    # Spring Session 存储类型 : redis
     store-type: redis
+  zipkin:
+    base-url: http://192.168.56.200:9411/
+    discovery-client-enabled: false
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1
 
 server:
   port: 20000
   servlet:
     session:
-      # Session \u8D85\u65F6\u65F6\u95F4 : 30m
+      # Session 超时时间 : 30m
       timeout: 30m
 
 management:

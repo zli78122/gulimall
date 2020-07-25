@@ -15,15 +15,23 @@ spring:
   redis:
     host: 192.168.56.200
     port: 6379
+  zipkin:
+    base-url: http://192.168.56.200:9411/
+    discovery-client-enabled: false
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1
 
-# \u7EBF\u7A0B\u6C60 \u914D\u7F6E
+# 线程池 配置
 gulimall:
   thread:
-    # \u6838\u5FC3\u7EBF\u7A0B\u6570
+    # 核心线程数
     core-size: 20
-    # \u6700\u5927\u7EBF\u7A0B\u6570
+    # 最大线程数
     max-size: 200
-    # \u4F11\u7720\u65F6\u957F
+    # 休眠时长
     keep-alive-time: 10
 
 management:
