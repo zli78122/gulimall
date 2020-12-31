@@ -24,3 +24,67 @@ ES6, Axios, element-ui, Node.js, Webpack, Vue.js
 Linux, Vagrant, Docker, Nginx  
 
 Maven, Git/GitHub, Apache JMeter  
+
+## Implementation & Functionalities
+### 1. Vagrant
+    vagrant init centos/7  
+    vagrant up  
+    vagrant ssh  
+    exit;  
+    vagrant reload  
+### 2. Docker
+    MySQL
+    Redis
+    Elasticsearch
+    Kibana
+    Nginx
+    RabbitMQ
+### 3. Spring Cloud
+    Spring Cloud Alibaba - Nacos         registration center
+    Spring Cloud Alibaba - Nacos         configuration center
+    Spring Cloud         - Ribbon        load balancing
+    Spring Cloud         - Feign         remote call
+    Spring Cloud Alibaba - Sentinel      flow protection
+    Spring Cloud         - Gateway       gateway
+    Spring Cloud         - Sleuth        tracing system
+    Spring Cloud Alibaba - Seata         distributed transaction
+### 4. Cache & Distributed Lock
+    Spring Cache + Redis, solve these three problems
+        (1). Cache Penetration
+        (2). Cache Crash
+        (3). Cache Breakdown
+    Local Lock: synchronized(this);
+    Distributed Lock - Redisson
+        (1). Reentrant Lock
+        (2). ReadWrite Lock
+        (3). Semaphore
+        (4). CountDownLatch
+    Spring Cache:
+        @Cacheable   : triggers cache population
+        @CacheEvict  : triggers cache eviction
+        @CachePut    : updates the cache without interfering with the method execution
+        @Caching     : regroups multiple cache operations to be applied on a method
+        @CacheConfig : shares some common cache-related settings at class-level
+### 5. Thread Pool & Asynchronous Task
+    Callable + FutureTask & Thread Pool
+    CompletableFuture ≈ Promise in Frontend
+    Customized Thread Pool
+### 6. Shopping Cart
+    Data Structure: Map<String key1, Map<String key2, CartItem>>
+        key1: Shopping Cart Identifier
+            For a Online Shopping Cart， key1 = "gulimall:cart:[userId]"   e.g. key1 = "gulimall:cart:1"
+            For a Offline Shopping Cart，key1 = "gulimall:cart:[UUID]"     e.g. key1 = "gulimall:cart:6cd5b6f7-4349-48b9-bb7d-feccadbecae1"
+            Note: Online Shopping Cart means login user, Offline Shopping Cart means unidentified user
+        key2 : Product Identifier
+### 7. Order & Distributed Transaction
+    Guarantee idempotence of interface using token.
+    Lua Script
+    Distributed Transaction (CAP & BASE)
+        Solution 1. Spring Cloud Alibaba Seata
+        Solution 2. RabbitMQ Delay Queue
+    Online Payment: Alipay
+### 8. Product Flash Sale
+    Service Single Responsibility: Dedicated and Independent Microservices
+    Random Code for Product Flash Sale - Token
+    Distributed Lock - Semaphore
+    RabbitMQ
