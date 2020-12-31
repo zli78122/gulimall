@@ -1,4 +1,4 @@
-# Gulimall: Large-scale Distributed Architecture E-commerce Platform
+# Gulimall: Distributed Architecture E-commerce Platform
 
 ## Introduction
 * Developed a full-stack e-commerce system based on Docker environment, which solved most of the problems faced by a highly concurrent distributed system, and used Nginx for dynamic and static separation, reverse proxy, and load balancing.
@@ -9,19 +9,18 @@
 * Completed product flash sale using Redisson distributed lock - Semaphore, which can process 50,000 QPS in one Tomcat server.
 
 ## Tech Stacks
+IntelliJ IDEA, Visual Studio Code, Kibana
 
-IntelliJ IDEA，Visual Studio Code, Kibana
+MySQL, Redis, Google Cloud Storage
 
-MySQL, Redis, Aliyun OSS
+Spring, Spring MVC, MyBatis/MyBatis-Plus, Spring Boot, Spring Cache, Spring Session  
+Spring Cloud : Nacos, Ribbon, Feign, Gateway, Seata, Sentinel, Sleuth, Zipkin  
+Thymeleaf, Elasticsearch, RabbitMQ  
+Redisson, CompletableFuture, Alibaba Cloud SMS, OAuth 2.0, Alipay, Cron
 
-Spring, Spring MVC, MyBatis-Plus, Spring Boot, Spring Cache, Spring Session<br/>
-Spring Cloud : Nacos, Ribbon, Feign, Gateway, Seata, Sentinel, Sleuth, Zipkin<br/>
-Thymeleaf, Elasticsearch, RabbitMQ<br/>
-Redisson, CompletableFuture, Aliyun SMS, OAuth 2.0, Alipay, Cron
+HTML, CSS, JavaScript, jQuery, XML, JSON  
+ES6, Axios, element-ui, Node.js, Webpack, Vue.js  
 
-HTML, CSS, JavaScript, jQuery, XML, JSON<br/>
-ES6, Axios, element-ui, Node.js, Webpack, Vue.js
+Linux, Vagrant, Docker, Nginx  
 
-Linux, Vagrant, Docker, Nginx
-
-Maven, Git/GitHub, Apache JMeter
+Maven, Git/GitHub, Apache JMeter  
