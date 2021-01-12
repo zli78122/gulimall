@@ -1,5 +1,10 @@
 # Gulimall: Distributed Architecture E-commerce Platform
 
+*Video: https://youtu.be/lyR6W9Feu_U*  
+
+*Backend Source Code: https://github.com/zli78122/gulimall*  
+*Frontend Source Code: https://github.com/zli78122/gulimall_renren-fast-vue*  
+
 ## Introduction
 * Developed a distributed e-commerce system based on **Spring Boot** and **Spring Cloud**, used **Docker** to manage multiple middleware and **Nginx** for dynamic and static separation, reverse proxy, and load balancing.
 * Introduced a complete set of **microservice** governance solution: **Nacos** as a registration and configuration center, **Gateway** as a gateway, **Feign** for remote call, **Ribbon** for load balancing, **Sentinel** for flow protection, **Sleuth** and **Zipkin** as a tracing system.
@@ -26,6 +31,19 @@ Understanding the following **four concepts** is crucial for you to understand t
 (Distributed Lock - Semaphore, MQ)
 * **Flash Sale**: Online store offers substantial discounts or promotions for a very short period of time. The main goals of a flash sale strategy are to get online shoppers to impulse buy, to increase short-term sales, or to sell your surplus stock. So a flash sale means a very high amount of concurrency, which may reach millions of concurrency.
 ![3.png](https://zli78122-gulimall.oss-us-west-1.aliyuncs.com/chart/3.png "3.png")
+
+## Show
+![4.png](https://zli78122-gulimall.oss-us-west-1.aliyuncs.com/show/4-2.png "4.png")  
+<br />
+![5.png](https://zli78122-gulimall.oss-us-west-1.aliyuncs.com/show/5-2.png "5.png")  
+<br />
+![6.png](https://zli78122-gulimall.oss-us-west-1.aliyuncs.com/show/6.png "6.png")  
+<br />
+![7.png](https://zli78122-gulimall.oss-us-west-1.aliyuncs.com/show/7.png "7.png")  
+<br />
+![8.png](https://zli78122-gulimall.oss-us-west-1.aliyuncs.com/show/8.png "8.png")  
+<br />
+![9.png](https://zli78122-gulimall.oss-us-west-1.aliyuncs.com/show/9.png "9.png")  
 
 ## Tech Stacks
 IntelliJ IDEA, Visual Studio Code, Kibana
