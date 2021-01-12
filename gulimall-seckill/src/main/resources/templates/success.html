@@ -17,22 +17,22 @@
     <div class="hd_wrap_top">
         <ul class="hd_wrap_left">
             <li class="hd_home"><i class="glyphicon glyphicon-home"></i>
-                <a href="http://gulimall.com">谷粒商城首页</a>
+                <a href="http://gulimall.com">Home</a>
             </li>
         </ul>
         <ul class="hd_wrap_right">
             <li>
-                <a th:if="${session.loginUser != null}" style="color: red; width: 100px" class="li_2">欢迎:
+                <a th:if="${session.loginUser != null}" style="color: red; width: 120px" class="li_2">Welcome:
                     [[${session.loginUser == null ? '' : session.loginUser.nickname}]]</a>
                 <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/login.html"
-                   style="color: red; width: 100px" class="li_2">你好，请登录</a>
+                   style="color: red; width: 100px" class="li_2">Please Login</a>
             </li>
             <li>
-                <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/reg.html" style="color: red;">免费注册</a>
+                <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/reg.html" style="color: red;">Register</a>
             </li>
             <li class="spacer"></li>
             <li>
-                <a href="javascript:;">我的订单</a>
+                <a href="javascript:;">Orders</a>
             </li>
         </ul>
     </div>
@@ -46,7 +46,7 @@
                 </a>
             </div>
             <div class="nav_top_two"><input type="text"/>
-                <button>搜索</button>
+                <button>Search</button>
             </div>
         </div>
     </div>
@@ -56,13 +56,13 @@
         <div class="w" id="result">
             <div class="m succeed-box">
                 <div th:if="${orderSn != null}" class="mc success-cont">
-                    <h1>恭喜，秒杀成功，订单号：[[${orderSn}]]</h1>
-                    <h2>正在准备订单数据，10s后自动跳转支付
-                        <a style="color:red;" th:href="${'http://order.gulimall.com/payOrder?orderSn=' + orderSn}">去支付</a>
-                    </h2>
+                    <h3><span style="color: red">Congratulations</span>, Order Number: <span style="color: red">[[${orderSn}]]</span></h3>
+                    <h4>The order data is being prepared, and the payment page will automatically be opened after 10s
+                        <a style="color:red;" th:href="${'http://order.gulimall.com/payOrder?orderSn=' + orderSn}"><h3>Pay</h3>></a>
+                    </h4>
                 </div>
                 <div th:if="${orderSn == null}" class="mc success-cont">
-                    <h1>秒杀失败，下次再来</h1>
+                    <h3>Failed, please come again next time.</h3>
                 </div>
             </div>
         </div>

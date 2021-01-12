@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-    <title></title>
+    <title>gulimall - Shopping Cart</title>
     <script type="text/javascript" src="/static/cart/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="/static/cart/bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript" src="/static/cart/js/swiper.min.js"></script>
@@ -18,22 +18,22 @@
     <div class="hd_wrap_top">
         <ul class="hd_wrap_left">
             <li class="hd_home"><i class="glyphicon glyphicon-home"></i>
-                <a href="http://gulimall.com/">谷粒商城首页</a>
+                <a href="http://gulimall.com/">Home</a>
             </li>
         </ul>
         <ul class="hd_wrap_right">
             <li>
-                <a th:if="${session.loginUser != null}" style="color: red; width: 100px" class="li_2">欢迎:
+                <a th:if="${session.loginUser != null}" style="color: red; width: 100px" class="li_2">Welcome:
                     [[${session.loginUser == null ? '' : session.loginUser.nickname}]]</a>
                 <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/login.html"
-                   style="color: red; width: 100px" class="li_2">你好，请登录</a>
+                   style="color: red; width: 100px" class="li_2">Please Login</a>
             </li>
             <li>
-                <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/reg.html" style="color: red;">免费注册</a>
+                <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/reg.html" style="color: red;">Register</a>
             </li>
             <li class="spacer"></li>
             <li>
-                <a href="javascript:;">我的订单</a>
+                <a href="javascript:;">Orders</a>
             </li>
         </ul>
     </div>
@@ -48,7 +48,7 @@
                 </a>
             </div>
             <div class="nav_top_two"><input type="text"/>
-                <button>搜索</button>
+                <button>Search</button>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
                 <div th:if="${item != null}" class="mc success-cont">
                     <div class="success-lcol">
                         <div class="success-top"><b class="succ-icon"></b>
-                            <h3 class="ftx-02">商品已成功加入购物车</h3></div>
+                            <h3 class="ftx-02">The product has been successfully added to the shopping cart</h3></div>
                         <div class="p-item">
                             <div class="p-img">
                                 <a th:href="'http://item.gulimall.com/' + ${item.skuId} + '.html'" target="_blank">
@@ -74,7 +74,7 @@
                                         TCL 55A950C 55英寸32核人工智能 HDR曲面超薄4K电视金属机身（枪色）
                                     </a>
                                 </div>
-                                <div class="p-extra"><span class="txt" th:text="'数量：' + ${item.count}">数量：1</span></div>
+                                <div class="p-extra"><span class="txt" th:text="'Quantity: ' + ${item.count}">Quantity: 1</span></div>
                             </div>
                             <div class="clr"></div>
                         </div>
@@ -85,8 +85,8 @@
                         </div>
                         <div class="clr"></div>
                         <div class="bg_shop">
-                            <a class="btn-tobback" th:href="'http://item.gulimall.com/' + ${item.skuId} + '.html'">查看商品详情</a>
-                            <a class="btn-addtocart" href="http://cart.gulimall.com/cart.html" id="GotoShoppingCart"><b></b>去购物车结算</a>
+                            <a class="btn-tobback" th:href="'http://item.gulimall.com/' + ${item.skuId} + '.html'">Item Detail</a>
+                            <a class="btn-addtocart" href="http://cart.gulimall.com/cart.html" id="GotoShoppingCart"><b></b>Shopping Cart</a>
                         </div>
                     </div>
                 </div>

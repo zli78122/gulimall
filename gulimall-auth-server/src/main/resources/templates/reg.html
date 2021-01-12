@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-    <title>gulimall - 注册页面</title>
+    <title>gulimall - Register</title>
     <script src="/static/reg/libs/jquery-1.12.4.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="/static/reg/js/jQuery/jquery-3.1.1.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/reg/bootStrap/bootstrap/css/bootstrap.css"/>
@@ -13,7 +13,7 @@
 <div class="laoda">
     <div class="zong">
         <div class="tou">
-            <p><b>谷粒商城用户注册协议和隐私政策</b></p>
+            <p><b>User Registration Agreement and Privacy Policy</b></p>
             <a href="/static/reg/https://www.jd.com/" class="cuo"><span class="glyphicon glyphicon-remove"></span></a>
         </div>
         <div class="zt">
@@ -39,7 +39,7 @@ Calibri;mso-fareast-font-family:宋体;">在<span class="GramE">您注册</span>
 normal"><u><span lang="EN-US" style="mso-bidi-font-size:10.5pt;line-height:150%;
 color:red"><a href="/static/reg/https://in.m.jd.com/help/app/register_info.html" target="_blank"><span lang="EN-US"
                                                                                                        style="font-family:宋体;mso-ascii-theme-font:
-minor-latin;mso-fareast-font-family:宋体;color:red"><span lang="EN-US">《谷粒商城用户注册协议》</span></span></a><o:p></o:p></span></u></b>
+minor-latin;mso-fareast-font-family:宋体;color:red"><span lang="EN-US">《Gulimall User Registration Agreement》</span></span></a><o:p></o:p></span></u></b>
                     </p>
                     <div style=" width: 100%; height: 130px;">
                         <div style="float:left;width:50%">
@@ -479,7 +479,7 @@ minor-latin;mso-fareast-font-family:宋体;color:red"><span lang="EN-US">《谷�
 									<a href="/static/reg/https://in.m.jd.com/help/app/private_policy.html"
                                        target="_blank">
 										<span lang="EN-US" style="font-family:宋体;mso-fareast-font-family:宋体;;color:red">
-											<span lang="EN-US">隐私政策</span></span></a><o:p></o:p></span></u></b></p>
+											<span lang="EN-US">Privacy Policy</span></span></a><o:p></o:p></span></u></b></p>
 
                     <p class="MsoNormal" style="line-height:150%">
                         <b style="mso-bidi-font-weight:normal">
@@ -5935,19 +5935,19 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
         </div>
         <div class="dibu">
             <a href="/static/reg/https://www.jd.com/">
-                <button class="quxiao">取消</button>
+                <button class="quxiao">Cancel</button>
             </a>
-            <button class="ty">同意并继续</button>
+            <button class="ty">Agree and Continue</button>
         </div>
     </div>
 </div>
 
 <header>
     <a href="http://gulimall.com" class="logo"><img src="/static/reg/img/logo1.jpg" alt=""></a>
-    <div class="desc">欢迎注册</div>
+    <div class="desc">Welcome Register</div>
     <div class="dfg">
-        <span>已有账号？</span>
-        <a href="http://auth.gulimall.com/login.html">请登录</a>
+        <span>Have Account？</span>
+        <a href="http://auth.gulimall.com/login.html">Please login</a>
     </div>
 </header>
 <section>
@@ -5956,24 +5956,24 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
 			 th:text="${errors != null ? (#maps.containsKey(errors,'msg') ? errors.msg : '') : ''}">
 		</div>
         <div class="register-box">
-            <label class="username_label">用 户 名
-                <input name="userName" maxlength="20" type="text" placeholder="您的用户名和登录名">
+            <label class="username_label">Username
+                <input name="userName" maxlength="20" type="text" placeholder="">
             </label>
 			<div class="tips" style="color : red"
 				 th:text="${errors != null ? (#maps.containsKey(errors,'userName') ? errors.userName : '') : ''}">
 			</div>
         </div>
         <div class="register-box">
-            <label class="other_label">设 置 密 码
-                <input name="password" maxlength="20" type="password" placeholder="建议至少使用两种字符组合">
+            <label class="other_label">Password
+                <input name="password" maxlength="20" type="password" placeholder="">
             </label>
 			<div class="tips" style="color : red"
 				 th:text="${errors != null ? (#maps.containsKey(errors,'password') ? errors.password : '') : ''}">
 			</div>
         </div>
         <div class="register-box">
-            <label class="other_label">确 认 密 码
-                <input maxlength="20" type="password" placeholder="请再次输入密码">
+            <label class="other_label">Confirmed
+                <input maxlength="20" type="password" placeholder="">
             </label>
             <div class="tips">
 
@@ -5981,32 +5981,32 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
         </div>
         <div class="register-box">
             <label class="other_label">
-                <span>中国 +86</span>
-                <input id="phoneNum" name="phone" class="phone" maxlength="20" type="text" placeholder="建议使用常用手机">
+                <span>China +86</span>
+                <input id="phoneNum" name="phone" class="phone" maxlength="20" type="text" placeholder="">
             </label>
 			<div class="tips" style="color : red"
 				 th:text="${errors != null ? (#maps.containsKey(errors,'phone') ? errors.phone : '') : ''}">
 			</div>
         </div>
         <div class="register-box">
-            <label class="other_label">验 证 码
-                <input name="code" maxlength="20" type="text" placeholder="请输入验证码" class="caa">
+            <label class="other_label">Captcha
+                <input name="code" maxlength="20" type="text" placeholder="" class="caa">
             </label>
-            <a id="sendCode">发送验证码</a>
+            <a id="sendCode">Send Code</a>
 			<div class="tips" style="color:red"
 				 th:text="${errors != null ? (#maps.containsKey(errors,'code') ? errors.code : '') : ''}">
 			</div>
         </div>
         <div class="arguement">
-            <input type="checkbox" id="xieyi"> 阅读并同意
-            <a href="/static/reg/#">《谷粒商城用户注册协议》</a>
-            <a href="/static/reg/#">《隐私政策》</a>
+            <input type="checkbox" id="xieyi"> Read and Agree
+            <a href="/static/reg/#">《User Registration Agreement》</a>
+            <a href="/static/reg/#">《Privacy Policy》</a>
             <div class="tips">
 
             </div>
             <br/>
             <div class="submit_btn">
-                <button type="submit" id="submit_btn">立 即 注 册</button>
+                <button type="submit" id="submit_btn">Register</button>
             </div>
         </div>
     </form>
@@ -6014,7 +6014,7 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
         <div class="right_r">
             <div class="right_r1">
                 <img src="/static/reg/img/a65a18e877a16246a92e1b755bd88a03_03.png"/>
-                <span>企业用户注册</span>
+                <span>BUSINESS USER</span>
             </div>
             <div class="right_r2">
                 <img src="/static/reg/img/a65a18e877a16246a92e1b755bd88a03_06.png"/>
@@ -6072,7 +6072,7 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
         </li>
     </ul>
 </div>
-<p class="bq">Copyright©2004-2016 谷粒商城gulimall.com 版权所有</p>
+<p class="bq">Copyright &copy; 2020-2021 gulimall.com by zli78122</p>
 <br/><br/>
 <script type="text/javascript" charset="utf-8">
     $(function () {

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>购物车</title>
+    <title>gulimall - Shopping Cart</title>
     <link rel="icon" href="/static/cart/img/心04.png" type="/image/x-icon"/>
     <link rel="stylesheet" href="/static/cart/css/One_bdyStyle.css">
     <link rel="stylesheet" href="/static/cart/css/index.css">
@@ -16,17 +16,17 @@
         <div class="header">
             <ul class="header-left">
                 <li>
-                    <a href="http://gulimall.com/">首页</a>
+                    <a href="http://gulimall.com/">Home</a>
                 </li>
             </ul>
             <ul class="header-right">
                 <li>
-                    <a th:if="${session.loginUser != null}" style="color: red">欢迎: [[${session.loginUser == null ? '' : session.loginUser.nickname}]]</a>
-                    <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/login.html" style="color: red">你好，请登录</a>
+                    <a th:if="${session.loginUser != null}" style="color: red">Welcome: [[${session.loginUser == null ? '' : session.loginUser.nickname}]]</a>
+                    <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/login.html" style="color: red">Please Login</a>
                 </li>
-                <li><a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/reg.html" style="color: red;">免费注册</a></li>
+                <li><a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/reg.html" style="color: red;">Register</a></li>
                 <li class="spacer"></li>
-                <li><a href="/static/cart/">我的订单</a></li>
+                <li><a href="/static/cart/">Orders</a></li>
                 <li class="spacer"></li>
             </ul>
             <div style="clear: both;"></div>
@@ -41,7 +41,7 @@
                 <a href="http://gulimall.com/" class="one_left_logo">
                     <img src="/static/cart/img/logo1.jpg">
                 </a>
-                <a href="http://cart.gulimall.com/cart.html" class="one_left_link">购物车</a>
+                <a href="http://cart.gulimall.com/cart.html" class="one_left_link">Shopping Cart</a>
             </div>
             <div class="one_top_right">
                 <input type="text" class="one_right_txt" placeholder="" onfocus="this.placeholder=''" onblur="this.placeholder='' ">
@@ -50,8 +50,8 @@
         </div>
         <div class="one_search_load" th:if="${session.loginUser == null}">
             <img src="/static/cart/img/shop_07.jpg" class="one_load_wraing">
-            <span>您还没有登录！登录后购物车的商品将保存到您账号中</span>
-            <a href="http://auth.gulimall.com/login.html"><input type="button" onclick="login()" value="立即登录" class="one_load_btn"></a>
+            <span>You are not logged in yet! The items in the shopping cart will be saved to your account after logging in</span>
+            <a href="http://auth.gulimall.com/login.html"><input type="button" onclick="login()" value="Login" class="one_load_btn"></a>
         </div>
     </div>
 </div>
@@ -59,23 +59,23 @@
     <div class="OneBdy_box">
         <div class="One_tabTop">
             <div class="One_Topleft">
-                <span>全部商品 </span>
+                <span>All Products </span>
             </div>
         </div>
         <div class="One_ShopTop">
             <ul>
-                <li><input type="checkbox" class="allCheck">全选</li>
-                <li>商品</li>
-                <li>单价</li>
-                <li>数量</li>
-                <li>小计</li>
-                <li>操作</li>
+                <li><input type="checkbox" class="allCheck"></li>
+                <li style="margin-left: 30px">Product</li>
+                <li style="margin-left: 500px">Price</li>
+                <li style="margin-left: 80px">Quantity</li>
+                <li style="margin-left: 50px">Subtotal</li>
+                <li style="margin-left: 50px">Actions</li>
             </ul>
         </div>
 
         <div class="One_ShopCon">
             <h1 th:if="${cart.items == null}">
-                购物车还没有商品，<a href="http://gulimall.com">去购物</a>
+                No items, <a href="http://gulimall.com"> buy now</a>
             </h1>
             <ul th:if="${cart.items != null}">
                 <li th:each="item : ${cart.items}">
@@ -112,7 +112,7 @@
                                 <p class="zj">￥[[${#numbers.formatDecimal(item.totalPrice,3,2)}]]</p>
                             </li>
                             <li>
-                                <p class="deleteItemBtn" th:attr="skuId = ${item.skuId}">删除</p>
+                                <p class="deleteItemBtn" th:attr="skuId = ${item.skuId}">Delete</p>
                             </li>
                         </ol>
                     </div>
@@ -122,10 +122,10 @@
         <div class="One_ShopFootBuy fix1">
             <div>
                 <ul>
-                    <li><input type="checkbox" class="allCheck"><span>全选</span></li>
-                    <li>删除选中的商品</li>
-                    <li>移到我的关注</li>
-                    <li>清除下柜商品</li>
+                    <li><input type="checkbox" class="allCheck"><span> Select All</span></li>
+                    <li>Delete Selected</li>
+                    <li>&nbsp;&nbsp;</li>
+                    <li>Clear Shopping Cart</li>
                 </ul>
             </div>
             <div>
@@ -142,7 +142,7 @@
                 </ol>
             </div>
             <div>
-                <button onclick="toTrade()" type="button">去结算</button>
+                <button onclick="toTrade()" type="button">Place Order</button>
             </div>
         </div>
     </div>
@@ -150,56 +150,55 @@
 
 <div class="One_isDel">
     <p>
-        <span>删除</span><span><img src="/static/cart/img/错误.png" alt=""></span>
+        <span>Delete</span><span><img src="/static/cart/img/错误.png" alt=""></span>
     </p>
     <div>
         <dl>
             <dt><img src="/static/cart/img/感叹三角形 (2).png" alt=""></dt>
             <dd>
-                <li>删除商品？</li>
-                <li>您可以选择移到关注，或删除商品。</li>
+                <li>Delete Items?</li>
+                <li>Follow items OR delete it now.</li>
             </dd>
         </dl>
     </div>
     <div>
-        <button type="button" onclick="deleteItem()">删除</button>
-
+        <button type="button" onclick="deleteItem()">Delete</button>
     </div>
 </div>
 <div class="One_moveGzIfNull">
     <p>
-        <span>删除</span><span><img src="/static/cart/img/错误.png" alt=""></span>
+        <span>Delete</span><span><img src="/static/cart/img/错误.png" alt=""></span>
     </p>
     <dl>
         <dt><img src="/static/cart/img/感叹三角形 (2).png" alt=""></dt>
-        <dd>请至少选中一件商品！</dd>
+        <dd>Please select at least one item!</dd>
     </dl>
 </div>
 <div class="One_moveMyGz">
     <p>
-        <span>删除</span><span><img src="/static/cart/img/错误.png" alt=""></span>
+        <span>Delete</span><span><img src="/static/cart/img/错误.png" alt=""></span>
     </p>
     <div>
         <dl>
             <dt><img src="/static/cart/img/感叹三角形 (2).png" alt=""></dt>
             <dd>
-                <li>移到关注</li>
-                <li>移动后选中商品将不再购物车中显示</li>
+                <li>Move to follow</li>
+                <li>The selected product will no longer be displayed in the shopping cart after moving</li>
             </dd>
         </dl>
     </div>
     <div>
-        <button type="button">确定</button>
-        <button type="button">取消</button>
+        <button type="button">Confirm</button>
+        <button type="button">Cancel</button>
     </div>
 </div>
 <div class="One_clearShop">
     <p>
-        <span>提示</span><span><img src="/static/cart/img/错误.png" alt=""></span>
+        <span>Tip</span><span><img src="/static/cart/img/错误.png" alt=""></span>
     </p>
     <dl>
         <dt><img src="/static/cart/img/感叹三角形 (2).png" alt=""></dt>
-        <dd>没有下柜商品!</dd>
+        <dd>No Items!</dd>
     </dl>
 </div>
 <!--底部-->

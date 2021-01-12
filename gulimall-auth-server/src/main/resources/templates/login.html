@@ -4,22 +4,22 @@
     <meta charset="utf-8"/>
     <link rel="stylesheet" type="text/css" href="/static/login/JD_sass/JD1.css"/>
     <script src="/static/login/JD_js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
-    <title>gulimall - 登录页面</title>
+    <title>gulimall - Login</title>
 </head>
 <body>
 <!--顶部logo-->
 <header>
     <a href="http://gulimall.com"><img src="/static/login/JD_img/logo.jpg"/></a>
-    <p>欢迎登录</p>
+    <p>Welcome Login</p>
     <div class="top-1">
-        <img src="/static/login/JD_img/4de5019d2404d347897dee637895d02b_06.png"/><span>登录页面,调查问卷</span>
+        <img src="/static/login/JD_img/4de5019d2404d347897dee637895d02b_06.png"/><span>Questionnaire</span>
     </div>
 </header>
 
 <div class="top-2">
     <div class="top-2a">
         <img src="/static/login/JD_img/4de5019d2404d347897dee637895d02b_11.png"/>
-        <p>依据《网络安全法》，为保障您的账户安全和正常使用，请尽快完成手机号验证！新版《<span>谷粒商城隐私政策</span>》已上线，将更有利于保护您的个人隐私。</p>
+        <p>Please complete mobile phone number verification as soon as possible, which will be more conducive to protecting your personal privacy</p>
     </div>
 </div>
 
@@ -31,26 +31,26 @@
     <div id="sign">
         <div class="si_top">
             <p>
-                <span>谷粒商城不会以任何理由要求您转账汇款，谨防诈骗。</span>
-                <span style="color: red" th:if="${session.msg != null}"><br>[[${session.msg}]]</span>
+                <span>gulimall will not ask you to transfer money anytime!</span>
+<!--                <span style="color: red" th:if="${session.msg != null}"><br>[[${session.msg}]]</span>-->
             </p>
         </div>
         <div class="si_cen">
-            <h2 class="act btn1">扫码登录</h2>
+            <h2 class="act btn1">Scan Login</h2>
             <span>|</span>
-            <h2 class="btn1">账户登录</h2>
+            <h2 class="btn1">Account Login</h2>
         </div>
         <div class="si_bom tab">
             <img src="/static/login/JD_img/show.png" class="bom_1"/>
             <a href="/static/login/#"><img src="/static/login/JD_img/phone-orange.png" class="bom_2"/></a>
-            <h6>打开<span class="red">手机谷粒商城</span> 扫描二维码</h6>
+            <h6>Open<span class="red">Mobile App</span> Scan QR Code</h6>
             <p>
                 <img src="/static/login/JD_img/4de5019d2404d347897dee637895d02b_15.png"/>
-                <span><a href="/static/login/#">免输入</a></span>
+                <span><a href="/static/login/#">Input Free</a></span>
                 <img src="/static/login/JD_img/4de5019d2404d347897dee637895d02b_17.png"/>
-                <span><a href="/static/login/#">更快</a></span>
+                <span><a href="/static/login/#">Faster</a></span>
                 <img src="/static/login/JD_img/4de5019d2404d347897dee637895d02b_19.png"/>
-                <span><a href="/static/login/#">更安全</a></span>
+                <span><a href="/static/login/#">Safer</a></span>
             </p>
         </div>
         <div class="si_bom1 tab" style="display: none;">
@@ -63,17 +63,17 @@
                 <ul>
                     <li class="top_1">
                         <img src="/static/login/JD_img/user_03.png" class="err_img1"/>
-                        <input name="loginacct" type="text" placeholder=" 邮箱/用户名/已验证手机" class="user"/>
+                        <input name="loginacct" type="text" placeholder=" email / username / phone" class="user"/>
                     </li>
                     <li>
                         <img src="/static/login/JD_img/user_06.png" class="err_img2"/>
-                        <input name="password" type="password" placeholder=" 密码" class="password"/>
+                        <input name="password" type="password" placeholder=" password" class="password"/>
                     </li>
                     <li class="bri">
-                        <a href="/static/login/">忘记密码</a>
+                        <a href="/static/login/">Forget Password?</a>
                     </li>
                     <li class="ent">
-                        <button class="btn2" type="submit"><a>登&nbsp;&nbsp;录</a></button>
+                        <button class="btn2" type="submit"><a>Sign&nbsp;&nbsp;In</a></button>
                     </li>
                 </ul>
             </form>
@@ -89,13 +89,13 @@
                 <li>
                     <a href="/static/login/">
                         <img src="/static/login/JD_img/weixin.png"/>
-                        <span>微信</span>
+                        <span>WeChat</span>
                     </a>
                 </li>
             </ul>
             <h5 class="rig">
                 <img src="/static/login/JD_img/4de5019d2404d347897dee637895d02b_25.png"/>
-                <span><a href="http://auth.gulimall.com/reg.html">立即注册</a></span>
+                <span><a href="http://auth.gulimall.com/reg.html">Register</a></span>
             </h5>
         </div>
     </div>
@@ -126,7 +126,7 @@
         <li class="little">|</li>
         <li><a href="/static/login/#">English Site</a></li>
     </ul>
-    <span>Copyright &copy; 2004-2017 谷粒商城gulimall.com 版权所有</span>
+    <span>Copyright &copy; 2020-2021 gulimall.com by zli78122</span>
 </footer>
 
 </body>
