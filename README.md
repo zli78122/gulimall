@@ -9,20 +9,22 @@
 
 ## Explanations
 ### 1. Relationships between SPU, SKU, Brand, Category, and Product Attribute
-Understanding the following four concepts is crucial for you to understand the relationship between these entities.
-* Sales Attribute: The different attribute values of the sales attributes of a product will lead to differences in the sales price of this product. e.g. iPhone 12 Pro Max 256GB and iPhone 12 Pro Max 512GB have a different sales price. So "capacity" is a sales attribute
-* Regular Attribute: It will not affect the price of the product, like the length, weight, ppi of iPhone 12 Pro Max.
-* SPU (Standard Product Unit): It is a type of goods, such as a type of iPhone, like iPhone 12 Pro Max.
-* SKU (Stock keeping Unit): It is a specific product unit based on the SPU, like iPhone 12 Pro Max Gold+256GB, iPhone 12 Pro Max Gold+512GB, iPhone 12 Pro Max Blue+256GB, iPhone 12 Pro Max Sliver+512GB. i.e. SKU is a combination of various Sales Attributes (color + capacity) of the SPU.
+Understanding the following **four concepts** is crucial for you to understand the relationship between these entities.
+* **Sales Attribute**: The different attribute values of the sales attributes of a product will lead to differences in the sales price of this product. e.g. iPhone 12 Pro Max 256GB and iPhone 12 Pro Max 512GB have a different sales price. So "capacity" is a sales attribute
+* **Regular Attribute**: It will not affect the price of the product, like the length, weight, ppi of iPhone 12 Pro Max.
+* **SPU (Standard Product Unit)**: It is a type of goods, such as a type of iPhone, like iPhone 12 Pro Max.
+* **SKU (Stock Keeping Unit)**: It is a specific product unit based on the SPU, like iPhone 12 Pro Max Gold+256GB, iPhone 12 Pro Max Gold+512GB, iPhone 12 Pro Max Blue+256GB, iPhone 12 Pro Max Sliver+512GB. i.e. SKU is a combination of various Sales Attributes (color + capacity) of the SPU.
 ![1.png](https://zli78122-gulimall.oss-us-west-1.aliyuncs.com/chart/1.png "1.png")
 
-### 2. Flow Chart of Generating/Canceling Order and Locking/Unlocking Inventory (Delayed Queue, BASE Theory, Distributed Flexible Transaction)
-* Locking Inventory: After the order is generated and before the user pays, the product purchased by current user will be locked in the inventory, which means that during this period, the product only belongs to the current user, and any other users can not purchase this product.
-* Unlocking Inventory: When the order is paid or cancelled, the system will unlock the inventory.
+### 2. Flow Chart of Generating/Canceling Order and Locking/Unlocking Inventory 
+Delayed Queue, BASE Theory, Distributed Flexible Transaction
+* **Locking Inventory**: After the order is generated and before the user pays, the product purchased by current user will be locked in the inventory, which means that during this period, the product only belongs to the current user, and any other users can not purchase this product.
+* **Unlocking Inventory**: When the order is paid or cancelled, the system will unlock the inventory.
 ![1.png](https://zli78122-gulimall.oss-us-west-1.aliyuncs.com/chart/1.png "1.png")
 
-### 3. Flow Chart of Product Flash Sale (Distributed Lock - Semaphore, MQ)
-* Flash Sale: Online store offers substantial discounts or promotions for a very short period of time. The main goals of a flash sale strategy are to get online shoppers to impulse buy, to increase short-term sales, or to sell your surplus stock. So a flash sale means a very high amount of concurrency, which may reach millions of concurrency.
+### 3. Flow Chart of Product Flash Sale 
+Distributed Lock - Semaphore, MQ
+* **Flash Sale**: Online store offers substantial discounts or promotions for a very short period of time. The main goals of a flash sale strategy are to get online shoppers to impulse buy, to increase short-term sales, or to sell your surplus stock. So a flash sale means a very high amount of concurrency, which may reach millions of concurrency.
 ![1.png](https://zli78122-gulimall.oss-us-west-1.aliyuncs.com/chart/1.png "1.png")
 
 ## Tech Stacks
