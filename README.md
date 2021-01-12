@@ -1,6 +1,6 @@
 # Gulimall: Distributed Architecture E-commerce Platform
 
-*Video: https://youtu.be/lyR6W9Feu_U*  
+*Video: https://youtu.be/QqitAgA-RXw*  
 
 *Backend Source Code: https://github.com/zli78122/gulimall*  
 *Frontend Source Code: https://github.com/zli78122/gulimall_renren-fast-vue*  
